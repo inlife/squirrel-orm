@@ -53,6 +53,7 @@ table_data["tbl_accounts"] <- [null, null, { _uid = 2, _entity = "Account",  use
 
 database <- {};
 database["select * from tbl_accounts where id = 2"] <- table_data["tbl_accounts"][2];
+database["select username from tbl_accounts where id = 2"] <- table_data["tbl_accounts"][2].username;
 
 function simple_sql_query(query) {
     dbg("[running query] " + query);
@@ -64,10 +65,10 @@ function run_external_db_request(query, callback) {
 }
 
 // type 1 (almost plain query)
-ORM.Query("select * from @Account where id = :id")
+ORM.Query("select username from @Account where id = :id")
     .setParameter("id", 2)
     .getSingleResult(function(err, result) {
-        dbg(result.username);
+        dbg(result);
     });
 
 // Account.findAll();
