@@ -7,8 +7,17 @@ function require(filename) {
 }
 
 function _uid(length = 8) {
-    local symbols = "abcdefghijklmopqrstuvwxyz0123456789";
+    local symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@$";
+    local string = "";
 
+    srand((rand() & time()) * clock());
+
+    for (local i = 0; i < length; i++) {
+        local pos = rand() % symbols.len();
+        string += symbols.slice(pos, pos + 1);
+    }
+
+    return string;
 }
 
 const UNDEFINED = "UNDEFINED";
@@ -63,76 +72,7 @@ ORM.Query("select * from @Account where id = :id")
 // local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
 // });
 
-function randomBytes() {
-    return time();
+for (local i = 0; i < 10; i++) {
+    dbg(_uid());
 }
 
-function randomByte() {
-    return randomBytes(1)[0] & 0x30;
-}
-
-function encode(lookup, number) {
-    local loopCounter = 0;
-    local done;
-
-    local str = "";
-
-    while (!done) {
-        str = str + lookup( ( (number >> (4 * loopCounter)) & 0x0f ) | randomByte() );
-        done = number < (pow(16, loopCounter + 1 ) );
-        loopCounter++;
-    }
-    return str;
-}
-
-
-function lookup(index) {
-    local alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-    return alphabet[index];
-}
-
-// Ignore all milliseconds before a certain time to reduce the size of the date entropy without sacrificing uniqueness.
-// This number should be updated every year or so to keep the generated id short.
-// To regenerate `new Date() - 0` and bump the version. Always bump the version!
-local REDUCE_TIME = 1459707606518;
-
-// don't change unless we change the algos or REDUCE_TIME
-// must be an integer and less than 16
-local version = 6;
-
-// if you are using cluster or multiple servers use this to make each instance
-// has a unique value for worker
-// Note: I don't know if this is automatically set when using third
-// party cluster solutions such as pm2.
-local clusterWorkerId = 0;
-
-// Counter is used when shortid is called multiple times in one second.
-local counter;
-
-// Remember the last time shortid was called in case counter is needed.
-local previousSeconds;
-
-function generate() {
-
-    local str = "";
-
-    local seconds = floor((time() - REDUCE_TIME) * 0.001);
-
-    if (seconds == previousSeconds) {
-        counter++;
-    } else {
-        counter = 0;
-        previousSeconds = seconds;
-    }
-
-    str = str + encode(lookup, version);
-    str = str + encode(lookup, clusterWorkerId);
-    if (counter > 0) {
-        str = str + encode(lookup, counter);
-    }
-    str = str + encode(lookup, seconds);
-
-    return str;
-}
-
-dbg(randomBytes());

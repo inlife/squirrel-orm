@@ -8,7 +8,6 @@ class ORM.Entity {
      * @type {Object}
      */
     __data = {};
-    
 
     /**
      * Array that keeps names of modified fields
@@ -31,11 +30,11 @@ class ORM.Entity {
      * 
      * @type {Boolean}
      */
-    __persiste = false;
-
+    __persisted = false;
 
     constructor() {
-
+        this.__data["_uid"] <- _uid();
+        this.__data["_entity"] <- typeof(this);
     }
 
     /**
