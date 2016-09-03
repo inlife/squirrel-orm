@@ -33,9 +33,11 @@ ORM <- {
  * TESTING CODE
  */
 
-// ORM.Driver({
+require("./Driver");
 
-// });
+ORM.Driver.setProxy(function(query, cb) {
+    cb(null, [simple_sql_query(query)]);
+});
 
 require("json");
 
@@ -58,14 +60,14 @@ function simple_sql_query(query) {
 }
 
 function run_external_db_request(query, callback) {
-    callback(null, [simple_sql_query(query)]);
+    
 }
 
 // type 1 (almost plain query)
 ORM.Query("select * from @Account where id = :id")
     .setParameter("id", 2)
     .getSingleResult(function(err, result) {
-        dbg(result.username );
+        dbg(result.username);
     });
 
 // Account.findAll();

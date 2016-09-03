@@ -211,7 +211,7 @@ class ORM.Query {
     function execute(callback) {
         local query = this.compile();
 
-        run_external_db_request(query, function(err, results) {
+        ORM.Driver.query(query, function(err, results) {
             return callback(err, err ? false : true);
         });
 
@@ -223,14 +223,15 @@ class ORM.Query {
      * @param  {Function} callback
      */
     function getSingleResult(callback) {
+        local self = this;
         local query = this.compile();
 
-        run_external_db_request(query, function(err, results) {
+        ORM.Driver.query(query, function(err, results) {
             if (err) return callback(err, null);
 
             // extract and hydrate data
             local result = results[0];
-            local hydrated = this.hydrate(result);
+            local hydrated = self.hydrate(result);
 
             // return it
             callback(null, hydrated);
@@ -244,16 +245,17 @@ class ORM.Query {
      * @param  {Function} callback
      */
     function getResult(callback) {
+        local self = this;
         local query = this.compile();
 
-        run_external_db_request(query, function(err, results) {
+        ORM.Driver.query(query, function(err, results) {
             if (err) return callback(err, null);
 
             local hydrated = [];
 
             // iterate over data and hydrate it
             foreach (idx, data in results) {
-                hydrated.push(this.hydrate(data));
+                hydrated.push(self.hydrate(data));
             }
 
             // return it
