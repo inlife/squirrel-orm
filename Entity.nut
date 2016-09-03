@@ -14,7 +14,7 @@ class ORM.Entity {
      * @param {mixed} value
      */
     function set(name, value) {
-        dbg("setting " + name + " " + value);
+        dbg("setting " + name + " " + value + " in " + this.table);
     }
 
     /**
@@ -26,12 +26,12 @@ class ORM.Entity {
     }
 
     /**
-     * Method "hydrates" (populates) model based on plain data
+     * Static method "hydrates" (populates) model based on plain data
      * and returns created object
      * @param  {Object} data
      * @return {ORM.Entity}
      */
-    function hydrate(data) {
+    static function hydrate(data) {
         local entity = this();
 
         entity.set("lol", "lal");
