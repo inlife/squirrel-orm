@@ -4,7 +4,7 @@ class ORM.Entity {
     static __mapping = {};
 
     constructor() {
-        ::print("orm.entity called");
+        dbg("orm.entity called");
     }
 
     /**
@@ -14,7 +14,7 @@ class ORM.Entity {
      * @param {mixed} value
      */
     function set(name, value) {
-
+        dbg("setting " + name + " " + value);
     }
 
     /**
@@ -32,7 +32,11 @@ class ORM.Entity {
      * @return {ORM.Entity}
      */
     function hydrate(data) {
-        
+        local entity = this();
+
+        entity.set("lol", "lal");
+
+        return this;
     }
 
     function save() {}
