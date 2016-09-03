@@ -1,5 +1,5 @@
 /**
- * PROD CODE
+ * PROD LIB CODE
  */
 function require(filename) {
     // TODO: add second inclusion prevention
@@ -30,7 +30,7 @@ ORM <- {
 };
 
 /**
- * TESTING CODE
+ * PROD USE CODE
  */
 
 require("./Driver");
@@ -38,6 +38,10 @@ require("./Driver");
 ORM.Driver.setProxy(function(query, cb) {
     cb(null, [simple_sql_query(query)]);
 });
+
+/**
+ * TESTING CODE
+ */
 
 require("json");
 

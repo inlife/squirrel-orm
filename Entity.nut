@@ -43,7 +43,6 @@ class ORM.Entity {
     __persisted = false;
 
 
-
     constructor() {
         this.__data = {};
         this.__modified = [];
@@ -180,4 +179,5 @@ class ORM.Entity {
     static function findAll() {}
     static function findBy() {}
     static function findOneBy() {}
+    static function __createTable() {}
 }
