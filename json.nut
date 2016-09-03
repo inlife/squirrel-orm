@@ -49,7 +49,6 @@ class json {
 
     function encode(var) {
         local _string;
-        
         switch(typeof(var)) {
             case "bool":
             case "integer":
@@ -81,8 +80,8 @@ class json {
                     if(_key == null)
                         return null;
                     local _value = encode(value);
-                    if(_value == null)
-                        return null;
+                    // if(_value == null)
+                    //     return null;
 
                     _string += _key + ":" + _value +(_i < var.len() ? "," : "");
                 }

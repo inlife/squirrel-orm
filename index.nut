@@ -7,10 +7,13 @@ function require(filename) {
 }
 
 function _uid(length = 8) {
-    local symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@$";
+    local symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     local string = "";
 
-    srand((rand() & time()) * clock());
+    if (first > 0) {
+        srand((rand() & time()) * clock());
+        first--;
+    }
 
     for (local i = 0; i < length; i++) {
         local pos = rand() % symbols.len();
@@ -62,7 +65,7 @@ function run_external_db_request(query, callback) {
 ORM.Query("select * from @Account where id = :id")
     .setParameter("id", 2)
     .getSingleResult(function(err, result) {
-        dbg(result);
+        dbg(result.username );
     });
 
 // Account.findAll();
@@ -72,7 +75,7 @@ ORM.Query("select * from @Account where id = :id")
 // local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
 // });
 
-for (local i = 0; i < 10; i++) {
-    dbg(_uid());
-}
+// for (local i = 0; i < 50; i++) {
+//     dbg(_uid());
+// }
 

@@ -5,9 +5,9 @@ class ORM.Trait.Positionable extends ORM.Trait.Interface {
      * @type {Array}
      */
     static fields = [
-        ORM.Field({ name = "x", type = "float" }),
-        ORM.Field({ name = "y", type = "float" }),
-        ORM.Field({ name = "z", type = "float" })
+        ORM.Field({ name = "x", type = "float" }, 0.0),
+        ORM.Field({ name = "y", type = "float" }, 0.0),
+        ORM.Field({ name = "z", type = "float" }, 0.0)
     ];
 
     function setPosition() {
