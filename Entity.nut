@@ -1,6 +1,10 @@
 class ORM.Entity {
     static table = UNDEFINED;
 
+    constructor() {
+        ::print("orm.entity called");
+    }
+
     /**
      * Method sets object field
      * and marks it as modified
@@ -19,6 +23,22 @@ class ORM.Entity {
 
     }
 
+    /**
+     * Method "hydrates" (populates) model based on plain data
+     * and returns created object
+     * @param  {Object} data
+     * @return {ORM.Entity}
+     */
+    function hydrate(data) {
+
+    }
+
     function save() {}
     function remove() {}
+    function findAll() {
+        ::print("finding all");
+        ::print(this.fields[0].name);
+    }
+    function findBy() {}
+    function findOneBy() {}
 }

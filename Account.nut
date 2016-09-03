@@ -1,4 +1,7 @@
+require("./Field");
 require("./Entity");
+require("./TraitInterface");
+require("./Positionable");
 
 class Account extends ORM.Entity {
     
@@ -13,7 +16,7 @@ class Account extends ORM.Entity {
      * Set up mapping for different values/columns inside table
      * @type {Array}
      */
-    static fields <- [
+    static fields = [
         ORM.Field({ name = "username", type = "string", size = 255 }),
         ORM.Field({ name = "password", type = "string", size = 255 }),
         ORM.Field({ name = "createdAt", type = "timestamp" })
@@ -24,8 +27,7 @@ class Account extends ORM.Entity {
      * (predefined collections of fields)
      * @type {Array}
      */
-    static traits <- [
-        ORM.Trait.Positionable(),
-        ORM.Trait.Rotationable()
+    static traits = [
+        ORM.Trait.Positionable()
     ];
 }

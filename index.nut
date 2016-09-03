@@ -43,8 +43,9 @@ ORM.Query("select * from @Account where id = :id")
         dbg(result);
     });
 
+Account.findAll();
+
 // type 2 (entity manager/repository)
 // local result = Account:findOneBy({ id = 2 });
-local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
-
-});
+// local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
+// });

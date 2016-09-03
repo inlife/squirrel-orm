@@ -115,18 +115,77 @@ class ORM.Query {
         return this;
     }
 
+    function __strReplace(search, replace, subject) {
+        local string = "";
+        local first = subject.find(search[0].tochar());
+        local last = (typeof first == "null" ? null : subject.find(
+            search[(search.len()-1)].tochar(), first
+        ));
+
+        if (typeof first == "null" || typeof last == "null") return false;
+     
+        for (local i = 0; i < subject.len(); i++) {
+            if (i >= first && i <= last) {
+                if (i == first)
+                    string = format("%s%s", string, replace.tostring());
+            }
+            else string = format("%s%s", string, subject[i].tochar());
+        }
+
+        return string;
+    }
+
+    /**
+     * Compile raw query into baked query
+     * (ready to be sent to dbms)
+     * @return {string}
+     */
+    function compile() {
+        local query = this.__raw;
+
+        foreach (index, value in this.__matched.entities) {
+            if (value.table == UNDEFINED) throw "ORM.Query: couldn't find configured table name for: " + index;
+
+            // replace data to table names
+            query = this.__strReplace("@" + index, value.table, query);
+        }
+
+        foreach (index, value in this.__matched.parameters) {
+            if (value == UNDEFINED) throw "ORM.Query: you didn't provided data for parameter: " + index;
+            
+            // replace data to table names
+            query = this.__strReplace(":" + index, value, query);
+        }
+
+        return query;
+    }
+
+    /**
+     * Run query without processing the result
+     * @param  {Function} callback
+     */
     function execute(callback) {
         callback(null, true);
         return this;
     }
 
-    function getResult(callback) {
-        callback(null, []);
+    /**
+     * Run query with processing the result for a single entity
+     * @param  {Function} callback
+     */
+    function getSingleResult(callback) {
+        callback(null, null);
         return this;
     }
 
-    function getSingleResult(callback) {
-        callback(null, null);
+    /**
+     * Run query with processing the result for a array of entities
+     * @param  {Function} callback
+     */
+    function getResult(callback) {
+        local query = this.compile();
+        dbg(query);
+        callback(null, []);
         return this;
     }
 }
