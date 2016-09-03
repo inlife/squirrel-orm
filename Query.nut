@@ -14,6 +14,12 @@ class ORM.Query {
     __raw = null;
 
     /**
+     * Fild stores current compiled query
+     * @type {[type]}
+     */
+    __compiled = null;
+
+    /**
      * Field with table of predefined 
      * regex expressions for matching in parse method
      * @type {Object}
@@ -42,7 +48,7 @@ class ORM.Query {
 
         // start parsing, and 
         // throw errors if any found
-        this.parse(queryString);
+        this.__parse(queryString);
     }
 
     /**
@@ -50,7 +56,7 @@ class ORM.Query {
      * throws error if entities, matched in query was not found in global namespace
      * @param  {string} queryString
      */
-    function parse(queryString) {
+    function __parse(queryString) {
         // search for entity names in query
         local previousPosition = 0; 
         while (true) {
@@ -115,7 +121,7 @@ class ORM.Query {
         return this;
     }
 
-    function __strReplace(search, replace, subject) {
+    function __strreplace(search, replace, subject) {
         local string = "";
         local first = subject.find(search[0].tochar());
         local last = (typeof first == "null" ? null : subject.find(
@@ -138,26 +144,57 @@ class ORM.Query {
     /**
      * Compile raw query into baked query
      * (ready to be sent to dbms)
+     * @param {bool} recomplie force recompilation
      * @return {string}
      */
-    function compile() {
+    function compile(recompile = false) {
+        // return exsting if no forced recompilation
+        if (!recompile && this.__compiled != null) {
+            return this.__compiled;
+        }
+
         local query = this.__raw;
 
+        // itrate over entities
         foreach (index, value in this.__matched.entities) {
             if (value.table == UNDEFINED) throw "ORM.Query: couldn't find configured table name for: " + index;
 
             // replace data to table names
-            query = this.__strReplace("@" + index, value.table, query);
+            query = this.__strreplace("@" + index, value.table, query);
         }
 
+        // iterate over parameters
         foreach (index, value in this.__matched.parameters) {
             if (value == UNDEFINED) throw "ORM.Query: you didn't provided data for parameter: " + index;
             
             // replace data to table names
-            query = this.__strReplace(":" + index, value, query);
+            query = this.__strreplace(":" + index, value, query);
         }
 
+        // save compiled version
+        this.__compiled = query;
+
         return query;
+    }
+
+    /**
+     * Function proxyies hydration of given data
+     * to a specific entity hydrator
+     * @return {ORM.Entity|mixed} Created and hydrated (populated with given data) entity or mixed data
+     */
+    function hydrate(data) {
+        // return empty if empty, lol
+        if (data.len() < 0) return data;
+
+        // just proxy data if no special keys
+        // (custom select fields case)
+        if (!"_uid" in data || !"_entity" in data) return data;
+
+        // extract entity class by name
+        local entityClass = compilestring("return " + data._entity + ";")();
+
+        // proxy hydration to entity class
+        return entityClass.hydrate(data);
     }
 
     /**
@@ -165,7 +202,12 @@ class ORM.Query {
      * @param  {Function} callback
      */
     function execute(callback) {
-        callback(null, true);
+        local query = this.compile();
+
+        run_external_db_request(query, function(err, results) {
+            return callback(err, err ? false : true);
+        });
+        
         return this;
     }
 
@@ -174,7 +216,19 @@ class ORM.Query {
      * @param  {Function} callback
      */
     function getSingleResult(callback) {
-        callback(null, null);
+        local query = this.compile();
+
+        run_external_db_request(query, function(err, results) {
+            if (err) return callback(err, null);
+
+            // extract and hydrate data
+            local result = results[0];
+            local hydrated = this.hydrate(result);
+
+            // return it
+            callback(null, hydrated);
+        });
+
         return this;
     }
 
@@ -184,8 +238,21 @@ class ORM.Query {
      */
     function getResult(callback) {
         local query = this.compile();
-        dbg(query);
-        callback(null, []);
+
+        run_external_db_request(query, function(err, results) {
+            if (err) return callback(err, null);
+
+            local hydrated = [];
+
+            // iterate over data and hydrate it
+            foreach (idx, data in results) {
+                hydrated.push(this.hydrate(data));
+            }
+
+            // return it
+            callback(null, hydrated);
+        });
+
         return this;
     }
 }

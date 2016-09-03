@@ -1,6 +1,8 @@
 class ORM.Entity {
     static table = UNDEFINED;
 
+    static __mapping = {};
+
     constructor() {
         ::print("orm.entity called");
     }
@@ -30,7 +32,7 @@ class ORM.Entity {
      * @return {ORM.Entity}
      */
     function hydrate(data) {
-
+        
     }
 
     function save() {}
@@ -41,4 +43,12 @@ class ORM.Entity {
     }
     function findBy() {}
     function findOneBy() {}
+
+    // function _newmember(index, value, attributes, isstatic) {
+    //     this[index] <- value;
+
+    //     if (index == "table") {
+    //         this.__mapping[index] <- this;
+    //     }
+    // }
 }
