@@ -1,16 +1,26 @@
+/**
+ * PROD CODE
+ */
 function require(filename) {
     // TODO: add second inclusion prevention
     return dofile(filename + ".nut", true);
 }
+
+const UNDEFINED = "UNDEFINED";
+
+ORM <- {
+    Trait = {}
+};
+
+/**
+ * TESTING CODE
+ */
 
 require("json");
 
 function dbg(data) {
     ::print("[debug] " + json.encode(data) + "\n");
 }
-
-const UNDEFINED = "UNDEFINED";
-ORM <- {};
 
 require("./Account");
 require("./Query");
@@ -26,8 +36,15 @@ function simple_sql_query(query) {
     return database[query];
 }
 
-local result = ORM.Query("select * from @Account where id = :id")
+// type 1 (almost plain query)
+ORM.Query("select * from @Account where id = :id")
     .setParameter("id", 2)
-    .getResult();
+    .getResult(function(err, result) {
+        dbg(result);
+    });
 
-dbg(result);
+// type 2 (entity manager/repository)
+// local result = Account:findOneBy({ id = 2 });
+local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
+
+});

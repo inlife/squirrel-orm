@@ -3,7 +3,7 @@
  * Examples:
  *     Query("select * from @MyEntity").getResult()
  *     Query("select p.id, d.size from tbl_p p left join tbl_d d on d.id = p.size_id where p.id = :id").setParameter('id', 15).getSingleResult()
- *     Query("delete from @MyEntity").getResult()
+ *     Query("delete from @MyEntity").execute()
  */
 class ORM.Query {
     
@@ -115,11 +115,18 @@ class ORM.Query {
         return this;
     }
 
-    function getResult() {
-        return [];
+    function execute(callback) {
+        callback(null, true);
+        return this;
     }
 
-    function getSingleResult() {
-        return null;
+    function getResult(callback) {
+        callback(null, []);
+        return this;
+    }
+
+    function getSingleResult(callback) {
+        callback(null, null);
+        return this;
     }
 }
