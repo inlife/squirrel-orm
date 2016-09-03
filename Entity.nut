@@ -1,15 +1,47 @@
 class ORM.Entity {
     static table = UNDEFINED;
+    static fields = [];
+    static traits = [];
 
-    static __mapping = {};
+    /**
+     * Table with stored/loaded data
+     * @type {Object}
+     */
+    __data = {};
+    
+
+    /**
+     * Array that keeps names of modified fields
+     * (changed since last save/load)
+     * 
+     * @type {Array}
+     */
+    __modified = [];
+
+    /**
+     * Field that tracks if entity is destroyed
+     * 
+     * @type {Boolean}
+     */
+    __destroyed = false;
+
+    /**
+     * Field that tracks if the entity 
+     * was ever persisted to storage
+     * 
+     * @type {Boolean}
+     */
+    __persiste = false;
+
 
     constructor() {
-        dbg("orm.entity called");
+
     }
 
     /**
      * Method sets object field
      * and marks it as modified
+     * 
      * @param {string} name
      * @param {mixed} value
      */
@@ -19,15 +51,21 @@ class ORM.Entity {
 
     /**
      * Method gets value by field name
+     * 
      * @param {string} name
      */
     function get(name) {
 
     }
 
+    function save() {}
+    function remove() {}
+
     /**
-     * Static method "hydrates" (populates) model based on plain data
+     * Static method creates and "hydrates" 
+     * (populates) model based on plain data
      * and returns created object
+     * 
      * @param  {Object} data
      * @return {ORM.Entity}
      */
@@ -39,20 +77,10 @@ class ORM.Entity {
         return this;
     }
 
-    function save() {}
-    function remove() {}
-    function findAll() {
+    static function findAll() {
         ::print("finding all");
         ::print(this.fields[0].name);
     }
-    function findBy() {}
-    function findOneBy() {}
-
-    // function _newmember(index, value, attributes, isstatic) {
-    //     this[index] <- value;
-
-    //     if (index == "table") {
-    //         this.__mapping[index] <- this;
-    //     }
-    // }
+    static function findBy() {}
+    static function findOneBy() {}
 }

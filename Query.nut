@@ -6,7 +6,7 @@
  *     Query("delete from @MyEntity").execute()
  */
 class ORM.Query {
-    
+
     /**
      * Field stores current raw query
      * @type {string}
@@ -20,7 +20,7 @@ class ORM.Query {
     __compiled = null;
 
     /**
-     * Field with table of predefined 
+     * Field with table of predefined
      * regex expressions for matching in parse method
      * @type {Object}
      */
@@ -46,7 +46,7 @@ class ORM.Query {
         // save plain raw query string
         this.__raw = queryString;
 
-        // start parsing, and 
+        // start parsing, and
         // throw errors if any found
         this.__parse(queryString);
     }
@@ -58,7 +58,7 @@ class ORM.Query {
      */
     function __parse(queryString) {
         // search for entity names in query
-        local previousPosition = 0; 
+        local previousPosition = 0;
         while (true) {
             local results = this.__regex.entityName.search(
                 queryString, previousPosition
@@ -84,7 +84,7 @@ class ORM.Query {
         }
 
         // search for params in query
-        previousPosition = 0; 
+        previousPosition = 0;
         while (true) {
             local results = this.__regex.parameters.search(
                 queryString, previousPosition
@@ -121,6 +121,13 @@ class ORM.Query {
         return this;
     }
 
+    /**
+     * Replace occurances of "search" to "replace" in the "subject"
+     * @param  {string} search
+     * @param  {string} replace
+     * @param  {string} subject
+     * @return {string}
+     */
     function __strreplace(search, replace, subject) {
         local string = "";
         local first = subject.find(search[0].tochar());
@@ -129,13 +136,13 @@ class ORM.Query {
         ));
 
         if (typeof first == "null" || typeof last == "null") return false;
-     
+
         for (local i = 0; i < subject.len(); i++) {
             if (i >= first && i <= last) {
-                if (i == first)
-                    string = format("%s%s", string, replace.tostring());
+                if (i == first) string = format("%s%s", string, replace.tostring());
+            } else { 
+                string = format("%s%s", string, subject[i].tochar());
             }
-            else string = format("%s%s", string, subject[i].tochar());
         }
 
         return string;
@@ -166,7 +173,7 @@ class ORM.Query {
         // iterate over parameters
         foreach (index, value in this.__matched.parameters) {
             if (value == UNDEFINED) throw "ORM.Query: you didn't provided data for parameter: " + index;
-            
+
             // replace data to table names
             query = this.__strreplace(":" + index, value, query);
         }
@@ -207,7 +214,7 @@ class ORM.Query {
         run_external_db_request(query, function(err, results) {
             return callback(err, err ? false : true);
         });
-        
+
         return this;
     }
 
