@@ -258,7 +258,7 @@ class ORM.Entity {
             local query = ORM.Query("UPDATE `:table` SET :values WHERE `_uid` = :uid");
 
             query.setParameter("table", this.table);
-            query.setParameter("values", ORM.Utils.ChangeTracker.calculateUpdates(this));
+            query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this));
             query.setParameter("uid", this.get("_uid"));
 
             return query.execute(callback);
@@ -267,8 +267,8 @@ class ORM.Entity {
             local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT LAST_INSERT_ID() as id;");
 
             query.setParameter("table", this.table);
-            query.setParameter("fields", ORM.Utils.ChangeTracker.calculateFields(this));
-            query.setParameter("values", ORM.Utils.ChangeTracker.calculateValues(this));
+            query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
+            query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
 
             // try to read result and save last inserted id
             // as current entity id, and mark as persisted
@@ -307,6 +307,22 @@ class ORM.Entity {
     }
 
     /**
+     * Form a query to find all entities
+     */
+    static function findAll(callback) {
+        return ORM.Query("SELECT * FROM `:table`").setParameter('table', table).getResult(callback);
+    }
+
+    static function findBy(condition, callback) {
+        local query = ORM.Query("SELECT * FROM `:table` :condition")
+            .setParameter('condition', ORM.Utis.Formatter.calculateCondition(condition))
+            .setParameter('table', table)
+            .getResult(callback);
+    }
+
+    static function findOneBy() {}
+
+    /**
      * Helper method tostring, returns classname
      * @return {String}
      */
@@ -317,8 +333,4 @@ class ORM.Entity {
     // TODO: make entities able to detach and clear memory
     function detach() {}
     function destroy() {}
-
-    static function findAll() {}
-    static function findBy() {}
-    static function findOneBy() {}
 }

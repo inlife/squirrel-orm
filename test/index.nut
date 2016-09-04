@@ -36,14 +36,14 @@ function run_external_db_request(query, callback) {
 }
 
 // type 1 (almost plain query)
-ORM.Query("select * from @Account where id = :id")
-    .setParameter("id", 2)
-    .getSingleResult(function(err, acc) {
-        // dbg(acc.export())
-        // acc.username = "inlife";
-        // acc.password = "asdasd";
-        acc.remove();
-    });
+// ORM.Query("select * from @Account where id = :id")
+//     .setParameter("id", 2)
+//     .getSingleResult(function(err, acc) {
+//         // dbg(acc.export())
+//         // acc.username = "inlife";
+//         // acc.password = "asdasd";
+//         acc.remove();
+//     });
 
 // local acc = Account();
 // acc.username = "userasd";
@@ -54,7 +54,9 @@ ORM.Query("select * from @Account where id = :id")
 // Account.findAll();
 
 // type 2 (entity manager/repository)
-// local result = Account:findOneBy({ id = 2 });
+Account.findBy({ id = 2 }, function(err, results) {
+    dbg(results);
+});
 // local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
 // });
 
