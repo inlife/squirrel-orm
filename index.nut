@@ -1,39 +1,68 @@
 /**
  * PROD LIB CODE
  */
-function require(filename) {
+
+/**
+ * Helper function for including
+ * all needed files (look at dat filestructure tho!)
+ */
+function __include(filename) {
     // TODO: add second inclusion prevention
     return dofile(filename + ".nut", true);
 }
 
-function _uid(length = 8) {
-    local symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-    local string = "";
+__include("json");
 
-    if (first > 0) {
-        srand((rand() & time()) * clock());
-        first--;
-    }
-
-    for (local i = 0; i < length; i++) {
-        local pos = rand() % symbols.len();
-        string += symbols.slice(pos, pos + 1);
-    }
-
-    return string;
+function dbg(data) {
+    ::print("[debug] " + json.encode(data) + "\n");
 }
 
+/**
+ * Undefined constant
+ * used all over the code
+ * @type {String}
+ */
 const UNDEFINED = "UNDEFINED";
 
+/**
+ * Defining our
+ * glorious namespace
+ */
 ORM <- {
     Trait = {}
+    Field = {}
+    Utils = {}
 };
+
+/**
+ * Marvelous includes
+ * First of all fields
+ * then traits
+ * then utils
+ * and then all the main stuff
+ */
+__include("./Field/Basic");
+__include("./Field/Integer");
+__include("./Field/Float");
+__include("./Field/String");
+__include("./Field/Text");
+__include("./Field/Bool");
+__include("./Field/Password");
+__include("./Field/Timestamp");
+
+__include("./Trait/Interface");
+__include("./Trait/Positionable");
+
+__include("./Utils/String");
+__include("./Utils/GUID");
+
+__include("./Driver");
+__include("./Query");
+__include("./Entity");
 
 /**
  * PROD USE CODE
  */
-
-require("./Driver");
 
 ORM.Driver.setProxy(function(query, cb) {
     cb(null, [simple_sql_query(query)]);
@@ -43,14 +72,7 @@ ORM.Driver.setProxy(function(query, cb) {
  * TESTING CODE
  */
 
-require("json");
-
-function dbg(data) {
-    ::print("[debug] " + json.encode(data) + "\n");
-}
-
-require("./Account");
-require("./Query");
+__include("./Account");
 
 table_data <- {};
 table_data["tbl_accounts"] <- [null, null, { _uid = 2, _entity = "Account",  username = "User", password = "123345" }];

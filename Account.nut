@@ -1,8 +1,3 @@
-require("./Field");
-require("./Entity");
-require("./TraitInterface");
-require("./Positionable");
-
 class Account extends ORM.Entity {
     
     /**
@@ -17,9 +12,9 @@ class Account extends ORM.Entity {
      * @type {Array}
      */
     static fields = [
-        ORM.Field({ name = "username", type = "string", size = 255 }),
-        ORM.Field({ name = "password", type = "string", size = 255 }),
-        ORM.Field({ name = "createdAt", type = "timestamp" })
+        ORM.Field.String({ name = "username", }),
+        ORM.Field.Password({ name = "password" }),
+        ORM.Field.Timestamp({ name = "createdAt" })
     ];
 
     /**

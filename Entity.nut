@@ -1,5 +1,3 @@
-require("./Field");
-
 class ORM.Entity {
     static table = UNDEFINED;
     static fields = [];
@@ -51,8 +49,8 @@ class ORM.Entity {
         // this.__data["_uid"] <- _uid();
         // this.__data["_entity"] <- typeof(this);
 
-        this.__attachField( ORM.Field({ name = "_uid",    type = "string", primary = true }) );
-        this.__attachField( ORM.Field({ name = "_entity", type = "string" }, typeof(this) )  );
+        this.__attachField( ORM.Field.String({ name = "_uid", primary = true }));
+        this.__attachField( ORM.Field.String({ name = "_entity", value = typeof(this) }));
 
         // attach field described in entity class
         foreach (idx, field in this.fields) {
