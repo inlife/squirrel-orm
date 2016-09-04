@@ -1,81 +1,24 @@
-/**
- * PROD LIB CODE
- */
-
-/**
- * Helper function for including
- * all needed files (look at dat filestructure tho!)
- */
-function __include(filename) {
+function __tinclude(filename) {
     // TODO: add second inclusion prevention
     return dofile(filename + ".nut", true);
 }
 
-// dbg stuff
-__include("json");
+__tinclude("./test/json");
 
 function dbg(data) {
     ::print("[debug] " + json.encode(data) + "\n");
 }
-// end of dbg stuff
 
-/**
- * Undefined constant
- * used all over the code
- * @type {String}
- */
-const UNDEFINED = "UNDEFINED";
 
-/**
- * Defining our
- * glorious namespace
- */
-ORM <- {
-    Trait = {}
-    Field = {}
-    Utils = {}
-};
+// load lib
+__tinclude("./lib/index");
 
-/**
- * Marvelous includes
- * First of all fields
- * then traits
- * then utils
- * and then all the main stuff
- */
-__include("./Field/Basic");
-__include("./Field/Integer");
-__include("./Field/Float");
-__include("./Field/String");
-__include("./Field/Text");
-__include("./Field/Bool");
-__include("./Field/Password");
-__include("./Field/Timestamp");
-
-__include("./Trait/Interface");
-__include("./Trait/Positionable");
-
-__include("./Utils/String");
-__include("./Utils/Array");
-__include("./Utils/GUID");
-
-__include("./Driver");
-__include("./Query");
-__include("./Entity");
-
-/**
- * PROD USE CODE
- */
-
+// set up driver
 ORM.Driver.setProxy(function(query, cb) {
     cb(null, [simple_sql_query(query)]);
 });
 
-/**
- * TESTING CODE
- */
-
-__include("./Account");
+__tinclude("./test/Account");
 
 table_data <- {};
 table_data["tbl_accounts"] <- [null, null, { _uid = 2, _entity = "Account",  username = "User", password = "123345" }];
