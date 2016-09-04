@@ -13,7 +13,6 @@ class ORM.Field.String extends ORM.Field.Basic {
         return format("'%s'", currentValue.tostring());
     }
 
-    
     /**
      * Method that decodes value
      * according to field class

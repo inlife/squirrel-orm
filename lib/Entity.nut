@@ -250,7 +250,8 @@ class ORM.Entity {
         if (this.__persisted) {
             // exit if not modifed
             if (this.__modified.len() < 1) {
-                return callback ? callback(null, this) : this;
+                // note: 3rd parameter (true) denotes that entity was not actually saved
+                return callback ? callback(null, this, true) : this;
             }
 
             // create and execute cute query
@@ -269,11 +270,15 @@ class ORM.Entity {
             query.setParameter("fields", ORM.Utils.ChangeTracker.calculateFields(this));
             query.setParameter("values", ORM.Utils.ChangeTracker.calculateValues(this));
 
+            // try to read result and save last inserted id
+            // as current entity id, and mark as persisted
             return query.getSingleResult(function(err, result) {
                 if (err && callback) return callback(err, null); 
 
-                // TODO: test for last insert id
-                if (!("id" in result)) throw "ORM.Entity: coundn't assign id after insertion; check the query or smth else.";
+                // TODO: test for last insert id for mysql&sqlite
+                if (!("id" in result)) {
+                    throw "ORM.Entity: coundn't assign id after insertion; check the query or smth else.";
+                }
 
                 self.__data["_uid"] = result["id"];
                 self.__persisted = true;

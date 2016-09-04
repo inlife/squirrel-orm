@@ -1,23 +1,18 @@
-function __tinclude(filename) {
-    return dofile(filename + ".nut", true);
-}
-
-__tinclude("./test/json");
+dofile("./test/json.nut", true);
 
 function dbg(data) {
     ::print("[debug] " + json.encode(data) + "\n");
 }
 
-
 // load lib
-__tinclude("./lib/index");
+dofile("./lib/index.nut", true);
 
 // set up driver
 ORM.Driver.setProxy(function(query, cb) {
     cb(null, [simple_sql_query(query)]);
 });
 
-__tinclude("./test/Account");
+dofile("./test/Account.nut", true);
 
 table_data <- {};
 table_data["tbl_accounts"] <- [null, null, { _uid = 2, _entity = "Account",  username = "User", password = "123345" }];
@@ -41,17 +36,18 @@ function run_external_db_request(query, callback) {
 }
 
 // type 1 (almost plain query)
-// ORM.Query("select * from @Account where id = :id")
-//     .setParameter("id", 2)
-//     .getSingleResult(function(err, acc) {
-//         dbg(acc.export())
-//         acc.username = "inlife";
-//         acc.save();
-//     });
+ORM.Query("select * from @Account where id = :id")
+    .setParameter("id", 2)
+    .getSingleResult(function(err, acc) {
+        dbg(acc.export())
+        acc.username = "inlife";
+        acc.password = "asdasd";
+        acc.save();
+    });
 
-local acc = Account();
-acc.username = "userasd";
-acc.save();
+// local acc = Account();
+// acc.username = "userasd";
+// acc.save();
 
 // dbg(Account().createTable().execute());
 
