@@ -28,7 +28,12 @@ database["select username from tbl_accounts where id = 2"] <- table_data["tbl_ac
 
 function simple_sql_query(query) {
     dbg("[running query] " + query);
-    return database[query];
+    
+    if (query in database) {
+        return database[query];
+    }
+
+    return []; 
 }
 
 function run_external_db_request(query, callback) {
@@ -36,13 +41,19 @@ function run_external_db_request(query, callback) {
 }
 
 // type 1 (almost plain query)
-ORM.Query("select * from @Account where id = :id")
-    .setParameter("id", 2)
-    .getSingleResult(function(err, result) {
-        dbg(result.username);
-    });
+// ORM.Query("select * from @Account where id = :id")
+//     .setParameter("id", 2)
+//     .getSingleResult(function(err, acc) {
+//         dbg(acc.export())
+//         acc.username = "inlife";
+//         acc.save();
+//     });
 
-dbg(Account().__create().compile());
+local acc = Account();
+acc.username = "userasd";
+acc.save();
+
+// dbg(Account().createTable().execute());
 
 // Account.findAll();
 

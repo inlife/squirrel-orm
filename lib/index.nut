@@ -37,6 +37,7 @@ __orm_include("Field/Float");
 __orm_include("Field/String");
 __orm_include("Field/Text");
 __orm_include("Field/Bool");
+__orm_include("Field/Id");
 __orm_include("Field/Password");
 __orm_include("Field/Timestamp");
 
@@ -46,6 +47,7 @@ __orm_include("Trait/Positionable");
 __orm_include("Utils/String");
 __orm_include("Utils/Array");
 __orm_include("Utils/GUID");
+__orm_include("Utils/ChangeTracker");
 
 __orm_include("Driver");
 __orm_include("Query");

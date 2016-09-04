@@ -117,15 +117,41 @@ class ORM.Field.Basic {
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",
-            this.__name, type, nullable, autoinc, primary, defval
+            this.getName(), type, nullable, autoinc, primary, defval
         ));
     }
-    
-    function encode(currentValue) {
 
+    /**
+     * Helper method to accessing field name
+     * lowercases the name, and throws error if not redefined
+     * @return {String} [description]
+     */
+    function getName() {
+        if (this.__name == UNDEFINED) {
+            throw "ORM.Field: you haven't provided valid name for a field " + typeof(this);
+        }
+
+        return this.__name.tolower();
+    }
+    
+    /**
+     * Method that encodes value
+     * according to field class
+     * @param  {Mixed} currentValue
+     * @return {Mixed}
+     */
+    function encode(currentValue) {
+        return currentValue;
     }
 
+    
+    /**
+     * Method that decodes value
+     * according to field class
+     * @param  {Mixed} encodedValue
+     * @return {Mixed}
+     */
     function decode(encodedValue) {
-
+        return encodedValue;
     }
 }

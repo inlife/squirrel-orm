@@ -1,5 +1,5 @@
 /**
- * Class for creating and executing SQL queries
+ * Class for creating and executing(proxying to a driver) SQL queries
  * Examples:
  *     Query("select * from @MyEntity").getResult()
  *     Query("select p.id, d.size from tbl_p p left join tbl_d d on d.id = p.size_id where p.id = :id").setParameter('id', 15).getSingleResult()
@@ -181,11 +181,11 @@ class ORM.Query {
      * Run query without processing the result
      * @param  {Function} callback
      */
-    function execute(callback) {
+    function execute(callback = null) {
         local query = this.compile();
 
         ORM.Driver.query(query, function(err, results) {
-            return callback(err, err ? false : true);
+            return callback ? callback(err, err ? false : true) : null;
         });
 
         return this;

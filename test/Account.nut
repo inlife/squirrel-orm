@@ -1,6 +1,13 @@
 class Account extends ORM.Entity {
     
     /**
+     * Didn't find any way to get current classname
+     * so, we need to set it up manually
+     * @type {String}
+     */
+    static classname = "Account";
+
+    /**
      * Set up table name
      * TODO: make automatic?
      * @type {String}
