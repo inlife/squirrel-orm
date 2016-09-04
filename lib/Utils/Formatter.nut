@@ -53,7 +53,7 @@ class ORM.Utils.Formatter {
     }
 
     static function escape(value) {
-        return typeof(value) == "string" ? "'" + value + "'" : value;
+        return (typeof(value) == "string" ? "'" + value + "'" : value).tostring();
     }
 
     /**
@@ -62,9 +62,13 @@ class ORM.Utils.Formatter {
      * @param  {ORM.Entity} entity
      * @return {String}
      */
-    static function calculateUpdates(condition) {
+    static function calculateCondition(condition) {
+        if (typeof(condition) == "string") {
+            return "WHERE " + condition;
+        }
+
         if (typeof(condition) != "table") {
-            throw "ORM.Query: you have to provide table as a condition to a query";
+            throw "ORM.Query: you have to provide table or a string as a condition to a query";
         } 
 
         // skip if empty
@@ -75,9 +79,9 @@ class ORM.Utils.Formatter {
         local result = [];
 
         foreach (name, value in condition) {
-            result.push(format("`%s` = %s", name, value));
+            result.push(format("`%s` = %s", name, this.escape(value)));
         }
 
-        return ORM.Utils.Array.join(result, ",");
+        return "WHERE " + ORM.Utils.Array.join(result, " AND ");
     }
 }

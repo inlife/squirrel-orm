@@ -307,20 +307,42 @@ class ORM.Entity {
     }
 
     /**
-     * Form a query to find all entities
+     * Method that tries to find all table entities
+     * @param  {Function} callback
      */
     static function findAll(callback) {
-        return ORM.Query("SELECT * FROM `:table`").setParameter('table', table).getResult(callback);
+        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table).getResult(callback);
     }
 
+    /**
+     * Method that tries to find all queried entities
+     * with mapping, by a special condition
+     * @param  {Table|String}   condition
+     * @param  {Function} callback
+     */
     static function findBy(condition, callback) {
         local query = ORM.Query("SELECT * FROM `:table` :condition")
-            .setParameter('condition', ORM.Utis.Formatter.calculateCondition(condition))
-            .setParameter('table', table)
-            .getResult(callback);
+        
+        query.setParameter("table", table);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+
+        return query.getResult(callback);
     }
 
-    static function findOneBy() {}
+    /**
+     * Method that tries to find single queried entity
+     * with mapping, by a special condition
+     * @param  {Table|String}   condition
+     * @param  {Function} callback
+     */
+    static function findOneBy(condition, callback) {
+        local query = ORM.Query("SELECT * FROM `:table` :condition")
+        
+        query.setParameter("table", table);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+
+        return query.getSingleResult(callback);
+    }
 
     /**
      * Helper method tostring, returns classname

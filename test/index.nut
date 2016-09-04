@@ -54,7 +54,7 @@ function run_external_db_request(query, callback) {
 // Account.findAll();
 
 // type 2 (entity manager/repository)
-Account.findBy({ id = 2 }, function(err, results) {
+Account.findBy("id like 5", function(err, results) {
     dbg(results);
 });
 // local acc = Account({ username = "test", password = "123123" }).save(function(err, result) {
