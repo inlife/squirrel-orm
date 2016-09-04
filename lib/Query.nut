@@ -202,6 +202,9 @@ class ORM.Query {
         ORM.Driver.query(query, function(err, results) {
             if (err) return callback(err, null);
 
+            // added return if no results
+            if (!results) return callback(err, null);
+
             // extract and hydrate data
             local result = results[0];
             local hydrated = self.hydrate(result);
