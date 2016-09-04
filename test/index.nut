@@ -39,10 +39,10 @@ function run_external_db_request(query, callback) {
 ORM.Query("select * from @Account where id = :id")
     .setParameter("id", 2)
     .getSingleResult(function(err, acc) {
-        dbg(acc.export())
-        acc.username = "inlife";
-        acc.password = "asdasd";
-        acc.save();
+        // dbg(acc.export())
+        // acc.username = "inlife";
+        // acc.password = "asdasd";
+        acc.remove();
     });
 
 // local acc = Account();

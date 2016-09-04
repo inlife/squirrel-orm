@@ -291,6 +291,22 @@ class ORM.Entity {
     }
 
     /**
+     * Remove entity from database
+     */
+    function remove(callback = null) {
+        if (this.__persisted) {
+            local query = ORM.Query("DELETE FROM `:table` WHERE `_uid` = :uid");
+
+            query.setParameter("table", this.table);
+            query.setParameter("uid", this.get("_uid"));
+
+            return query.execute(callback);
+        }
+
+        return callback ? callback(null, null) : null;
+    }
+
+    /**
      * Helper method tostring, returns classname
      * @return {String}
      */
@@ -298,9 +314,9 @@ class ORM.Entity {
         return this.classname;
     }
 
+    // TODO: make entities able to detach and clear memory
     function detach() {}
     function destroy() {}
-    function remove() {}
 
     static function findAll() {}
     static function findBy() {}
