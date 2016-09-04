@@ -1,6 +1,6 @@
 /**
  * Basic class for field
- * Can be used directly, or (much better) inherited
+ * Must be inherited to be used
  */
 class ORM.Field.Basic {
 
@@ -9,18 +9,6 @@ class ORM.Field.Basic {
      * @type {String}
      */
     __name = UNDEFINED;
-
-    /**
-     * Field type
-     * @type {String}
-     */
-    __type = "string";
-
-    /**
-     * Field size (yea, some fields have 'em)
-     * @type {Number}
-     */
-    __size = 255;
 
     /**
      * Default value
@@ -35,10 +23,34 @@ class ORM.Field.Basic {
     __primary = false;
 
     /**
+     * Is field nullable
+     * @type {Boolean}
+     */
+    __nullable = false;
+
+    /**
      * Is this field will be exported on Entity.export
      * @type {Boolean}
      */
     __exported = true;
+
+    /**
+     * Field type
+     * @type {String}
+     */
+    static type = UNDEFINED;
+
+    /**
+     * Field size (yea, some fields have 'em)
+     * @type {Number}
+     */
+    static size = 255;
+
+    /**
+     * Field size (yea, some fields have 'em)
+     * @type {Number}
+     */
+    static value = UNDEFINED;
 
     /**
      * Constructor that populates data
@@ -51,14 +63,24 @@ class ORM.Field.Basic {
             throw "ORM.Field: you haven't provided valid name for a field " + typeof(this);
         }
 
+        if (this.type == UNDEFINED) {
+            throw "ORM.Field: you haven't inherited base field, or did not set it's database type for: " + data.name;
+        }
+
         // convert to lower and save
         this.__name = data.name.tostring().tolower();
 
         // check and save others
-        this.__type     = "type"    in data ? data.type     : "string";
-        this.__size     = "size"    in data ? data.size     : 255;
-        this.__value    = "value"   in data ? data.value    : null;
-        this.__primary  = "primary" in data ? data.primary  : false;
+        this.__primary  = "primary"  in data ? data.primary  : false;
+        this.__exported = "exported" in data ? data.exported : true;
+        this.__nullable = "nullable" in data ? data.nullable : false;
+
+        // handle the default value
+        if ("value" in data) {
+            this.__value = data.value;
+        } else if (this.value != UNDEFINED) {
+            this.__value = this.value;
+        }
     }
     
     function encode(currentValue) {
