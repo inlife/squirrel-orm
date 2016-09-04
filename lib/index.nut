@@ -1,10 +1,10 @@
 /**
  * Helper function for including
  * all needed files (look at dat filestructure tho!)
+ * why underscores? - we are worried about global namespace!
  */
 function __orm_include(filename) {
-    // TODO: add second inclusion prevention
-    return dofile(filename + ".nut", true);
+    return dofile("./lib/" + filename + ".nut", true);
 }
 
 /**
@@ -31,25 +31,25 @@ ORM <- {
  * then utils
  * and then all the main stuff
  */
-__orm_include("./lib/Field/Basic");
-__orm_include("./lib/Field/Integer");
-__orm_include("./lib/Field/Float");
-__orm_include("./lib/Field/String");
-__orm_include("./lib/Field/Text");
-__orm_include("./lib/Field/Bool");
-__orm_include("./lib/Field/Password");
-__orm_include("./lib/Field/Timestamp");
+__orm_include("Field/Basic");
+__orm_include("Field/Integer");
+__orm_include("Field/Float");
+__orm_include("Field/String");
+__orm_include("Field/Text");
+__orm_include("Field/Bool");
+__orm_include("Field/Password");
+__orm_include("Field/Timestamp");
 
-__orm_include("./lib/Trait/Interface");
-__orm_include("./lib/Trait/Positionable");
+__orm_include("Trait/Interface");
+__orm_include("Trait/Positionable");
 
-__orm_include("./lib/Utils/String");
-__orm_include("./lib/Utils/Array");
-__orm_include("./lib/Utils/GUID");
+__orm_include("Utils/String");
+__orm_include("Utils/Array");
+__orm_include("Utils/GUID");
 
-__orm_include("./lib/Driver");
-__orm_include("./lib/Query");
-__orm_include("./lib/Entity");
+__orm_include("Driver");
+__orm_include("Query");
+__orm_include("Entity");
 
 /**
  * Now, global namespace is populated

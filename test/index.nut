@@ -1,5 +1,4 @@
 function __tinclude(filename) {
-    // TODO: add second inclusion prevention
     return dofile(filename + ".nut", true);
 }
 
