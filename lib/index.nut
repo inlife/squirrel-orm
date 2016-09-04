@@ -4,7 +4,7 @@
  * why underscores? - we are worried about global namespace!
  */
 function __orm_include(filename) {
-    return dofile("./lib/" + filename + ".nut", true);
+    return dofile(__FILE__.slice(0, -9) +  "lib/" + filename + ".nut", true);
 }
 
 /**
