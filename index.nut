@@ -11,11 +11,13 @@ function __include(filename) {
     return dofile(filename + ".nut", true);
 }
 
+// dbg stuff
 __include("json");
 
 function dbg(data) {
     ::print("[debug] " + json.encode(data) + "\n");
 }
+// end of dbg stuff
 
 /**
  * Undefined constant
@@ -91,10 +93,10 @@ function run_external_db_request(query, callback) {
 }
 
 // type 1 (almost plain query)
-ORM.Query("select username from @Account where id = :id")
+ORM.Query("select * from @Account where id = :id")
     .setParameter("id", 2)
     .getSingleResult(function(err, result) {
-        dbg(result);
+        dbg(result.username);
     });
 
 // Account.findAll();

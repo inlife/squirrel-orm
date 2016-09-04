@@ -1,4 +1,4 @@
-class ORM.Entity {
+class ORM.Entity {  
     static table = UNDEFINED;
     static fields = [];
     static traits = [];
@@ -59,6 +59,10 @@ class ORM.Entity {
 
         // inherit traits described in entity class
         foreach (idx, trait in this.traits) {
+            if (!(trait instanceof ORM.Trait.Interface)) {
+                throw "ORM.Entity: you've tried to insert non-inherited trait. Dont do dis.";
+            }
+
             // attach trait fields
             foreach (idx, field in trait.fields) {
                 this.__attachField(field);
@@ -78,8 +82,12 @@ class ORM.Entity {
      * @param  {ORM.Field} field
      */
     function __attachField(field) {
-        this.__data[field.name] <- field.value;
-        this.__fields[field.name] <- field;
+        if (!(field instanceof ORM.Field.Basic)) {
+            throw "ORM.Entity: you've tried to attach non-inherited field. Dont do dis.";
+        }
+
+        this.__data[field.__name] <- field.__value;
+        this.__fields[field.__name] <- field;
     }
 
     /**

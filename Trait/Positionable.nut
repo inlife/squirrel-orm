@@ -10,6 +10,9 @@ class ORM.Trait.Positionable extends ORM.Trait.Interface {
         ORM.Field.Float({ name = "z" })
     ];
 
+    /**
+     * Methods that will be inserted into traited model, kinda
+     */
     function setPosition() {
 
     }
