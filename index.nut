@@ -56,6 +56,7 @@ __include("./Trait/Interface");
 __include("./Trait/Positionable");
 
 __include("./Utils/String");
+__include("./Utils/Array");
 __include("./Utils/GUID");
 
 __include("./Driver");
@@ -98,6 +99,8 @@ ORM.Query("select * from @Account where id = :id")
     .getSingleResult(function(err, result) {
         dbg(result.username);
     });
+
+dbg(Account().__create().compile());
 
 // Account.findAll();
 

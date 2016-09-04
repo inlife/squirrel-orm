@@ -49,7 +49,7 @@ class ORM.Entity {
         // this.__data["_uid"] <- _uid();
         // this.__data["_entity"] <- typeof(this);
 
-        this.__attachField( ORM.Field.String({ name = "_uid", primary = true }));
+        this.__attachField( ORM.Field.Integer({ name = "_uid", primary = true, autoinc = true }));
         this.__attachField( ORM.Field.String({ name = "_entity", value = typeof(this) }));
 
         // attach field described in entity class
@@ -180,10 +180,33 @@ class ORM.Entity {
         return entity;
     }
 
+    /**
+     * Method creates new query table
+     * @return {ORM.Query} [description]
+     */
+    function __create() {
+        local table_name = this.table.tolower();
+        local table_fields = [];
+
+        // compile fields data
+        foreach (idx, field in this.__fields) {
+            table_fields.push(field.__create());
+        }
+
+        // TODO: more custom index building
+
+        // create query and fill data
+        local query = ORM.Query("CREATE TABLE IF NOT EXISTS `:table` (:fields)");
+
+        query.setParameter("table", table_name);
+        query.setParameter("fields", ORM.Utils.Array.join(table_fields, ","));
+
+        return query;
+    }
+
     function save() {}
     function remove() {}
     static function findAll() {}
     static function findBy() {}
     static function findOneBy() {}
-    static function __createTable() {}
 }

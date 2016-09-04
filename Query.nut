@@ -140,7 +140,7 @@ class ORM.Query {
             if (value.table == UNDEFINED) throw "ORM.Query: couldn't find configured table name for: " + index;
 
             // replace data to table names
-            query = ORM.Utils.String.replace("@" + index, value.table, query);
+            query = ORM.Utils.String.replace("@" + index, value.table.tolower(), query);
         }
 
         // iterate over parameters

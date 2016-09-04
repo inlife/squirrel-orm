@@ -7,23 +7,25 @@ class ORM.Utils.String {
      * @param  {string} subject
      * @return {string}
      */
-    static function replace(search, replace, subject) {
-        local string = "";
-        local first = subject.find(search[0].tochar());
-        local last = (typeof first == "null" ? null : subject.find(
-            search[(search.len()-1)].tochar(), first
-        ));
+    function replace(original, replacement, string) {
+        local expression = regexp(original);
+        local result = "";
+        local position = 0;
+        local captures = expression.capture(string);
 
-        if (typeof first == "null" || typeof last == "null") return false;
-
-        for (local i = 0; i < subject.len(); i++) {
-            if (i >= first && i <= last) {
-                if (i == first) string = format("%s%s", string, replace.tostring());
-            } else { 
-                string = format("%s%s", string, subject[i].tochar());
+        while (captures != null) {
+            foreach (i, capture in captures) {
+                result += string.slice(position, capture.begin);
+                result += replacement;
+                position = capture.end;
             }
+
+            captures = expression.capture(string, position);
         }
 
-        return string;
+        result += string.slice(position);
+
+        return result;
     }
+
 }

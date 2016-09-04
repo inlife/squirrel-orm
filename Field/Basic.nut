@@ -23,6 +23,11 @@ class ORM.Field.Basic {
     __primary = false;
 
     /**
+     * Is this field is auto incremented
+     */
+    __autoinc = false;
+
+    /**
      * Is field nullable
      * @type {Boolean}
      */
@@ -44,7 +49,7 @@ class ORM.Field.Basic {
      * Field size (yea, some fields have 'em)
      * @type {Number}
      */
-    static size = 255;
+    static size = 0;
 
     /**
      * Field size (yea, some fields have 'em)
@@ -58,6 +63,11 @@ class ORM.Field.Basic {
      * @param  {Object} data
      */
     constructor (data) {
+        // try to parse 1 argument as name
+        if (typeof(data) == "string") {
+            data = { "name": data };
+        }
+
         // check most important parameter - name
         if (!("name" in data) || data.name.tostring().len() < 1) {
             throw "ORM.Field: you haven't provided valid name for a field " + typeof(this);
@@ -72,8 +82,9 @@ class ORM.Field.Basic {
 
         // check and save others
         this.__primary  = "primary"  in data ? data.primary  : false;
-        this.__exported = "exported" in data ? data.exported : true;
         this.__nullable = "nullable" in data ? data.nullable : false;
+        this.__autoinc  = "autoinc"  in data ? data.autoinc  : false;
+        this.__exported = "exported" in data ? data.exported : true;
 
         // handle the default value
         if ("value" in data) {
@@ -81,6 +92,33 @@ class ORM.Field.Basic {
         } else if (this.value != UNDEFINED) {
             this.__value = this.value;
         }
+    }
+
+    /**
+     * Create field descriptor for db
+     * @return {string}
+     */
+    function __create() {
+        // get field type
+        local type = this.type.toupper();
+
+        // attach size if not 0
+        if (this.size != 0) {
+            type += "(" + this.size + ")";
+        }
+
+        // metadata
+        local nullable  = this.__nullable ? "NULL" : "NOT NULL";
+        local autoinc   = this.__autoinc ? "AUTO_INCREMENT" : "";
+        local primary   = this.__primary ? "PRIMARY KEY" : "";
+
+        // default value
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.__value : "";
+
+        // insert and return;
+        return strip(format("`%s` %s %s %s %s %s",
+            this.__name, type, nullable, autoinc, primary, defval
+        ));
     }
     
     function encode(currentValue) {
