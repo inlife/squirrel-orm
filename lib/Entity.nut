@@ -354,5 +354,5 @@ class ORM.Entity {
 
     // TODO: make entities able to detach and clear memory
     function detach() {}
-    function destroy() {}
+    function clean() {}
 }
