@@ -1,6 +1,7 @@
 class ORM.Driver {
     static storage = {
         proxy = null,
+        provider = "mysql",
         configured = false
     };
 
@@ -8,8 +9,11 @@ class ORM.Driver {
         
     }
 
-    function configure() {
-
+    /**
+     * Method for configuration current connectins
+     */
+    function configure(settings = null) {
+        storage.provider = "provider" in settings ? settings.provider : storage.provider;
     }
 
     function setProxy(callback) {

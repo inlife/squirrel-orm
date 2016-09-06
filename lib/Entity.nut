@@ -264,11 +264,19 @@ class ORM.Entity {
             return query.execute(callback);
         } else {
             // create and execute even cuter query
-            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT LAST_INSERT_ID() as id;");
+            local lastid = "LAST_INSERT_ID";
+
+            // special check for sqlite
+            if (ORM.Driver.storage.provider == "sqlite") {
+                lastid = "last_insert_rowid";
+            }
+
+            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT :lastid() as id;");
 
             query.setParameter("table", this.table);
             query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
             query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
+            query.setParameter("lastid", lastid);
 
             // try to read result and save last inserted id
             // as current entity id, and mark as persisted

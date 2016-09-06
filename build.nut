@@ -56,6 +56,12 @@ class ORM.Field.Basic {
     __exported = true;
 
     /**
+     * Is this a SQLite implementation of the field
+     * @type {Boolean}
+     */
+    __sqlite = false;
+
+    /**
      * Field type
      * @type {String}
      */
@@ -128,12 +134,22 @@ class ORM.Field.Basic {
         local autoinc   = this.__autoinc ? "AUTO_INCREMENT" : "";
         local primary   = this.__primary ? "PRIMARY KEY" : "";
 
+        // special override for sqlite
+        if (ORM.Driver.storage.provider == "sqlite") {
+
+            // autoincrement field
+            if (autoinc != "") {
+                autoinc = "AUTOINCREMENT";
+                type = "INTEGER";
+            }
+        }
+
         // default value
         local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.encode(this.__value) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",
-            this.getName(), type, nullable, autoinc, primary, defval
+            this.getName(), type, nullable, primary, autoinc, defval
         ));
     }
 
@@ -465,6 +481,7 @@ class ORM.Utils.Formatter {
 class ORM.Driver {
     static storage = {
         proxy = null,
+        provider = "mysql",
         configured = false
     };
 
@@ -472,8 +489,11 @@ class ORM.Driver {
         
     }
 
-    function configure() {
-
+    /**
+     * Method for configuration current connectins
+     */
+    function configure(settings = null) {
+        storage.provider = "provider" in settings ? settings.provider : storage.provider;
     }
 
     function setProxy(callback) {
@@ -995,11 +1015,19 @@ class ORM.Entity {
             return query.execute(callback);
         } else {
             // create and execute even cuter query
-            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT LAST_INSERT_ID() as id;");
+            local lastid = "LAST_INSERT_ID";
+
+            // special check for sqlite
+            if (ORM.Driver.storage.provider == "sqlite") {
+                lastid = "last_insert_rowid";
+            }
+
+            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT :lastid() as id;");
 
             query.setParameter("table", this.table);
             query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
             query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
+            query.setParameter("lastid", lastid);
 
             // try to read result and save last inserted id
             // as current entity id, and mark as persisted
