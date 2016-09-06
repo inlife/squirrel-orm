@@ -344,7 +344,7 @@ class ORM.Entity {
      * @param  {Function} callback
      */
     static function findOneBy(condition, callback) {
-        local query = ORM.Query("SELECT * FROM `:table` :condition")
+        local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
         
         query.setParameter("table", table);
         query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));

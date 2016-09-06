@@ -53,7 +53,7 @@ class ORM.Utils.Formatter {
     }
 
     static function escape(value) {
-        return (typeof(value) == "string" ? "'" + value + "'" : value).tostring();
+        return (typeof(value) == "string" || typeof(value) == "bool" ? "'" + value + "'" : value).tostring();
     }
 
     /**
