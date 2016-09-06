@@ -203,7 +203,7 @@ class ORM.Query {
             if (err) return callback(err, null);
 
             // added return if no results
-            if (!results) return callback(err, null);
+            if (!results || results.len() < 1) return callback(err, null);
 
             // extract and hydrate data
             local result = results[0];
