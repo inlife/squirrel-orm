@@ -97,10 +97,10 @@ class ORM.Field.Basic {
         this.__name = data.name.tostring().tolower();
 
         // check and save others
-        this.__primary  = "primary"  in data ? data.primary  : false;
-        this.__nullable = "nullable" in data ? data.nullable : false;
-        this.__autoinc  = "autoinc"  in data ? data.autoinc  : false;
-        this.__exported = "exported" in data ? data.exported : true;
+        this.__primary  = "primary"  in data ? data.primary  : this.__primary;
+        this.__nullable = "nullable" in data ? data.nullable : this.__nullable;
+        this.__autoinc  = "autoinc"  in data ? data.autoinc  : this.__autoinc;
+        this.__exported = "exported" in data ? data.exported : this.__exported;
 
         // handle the default value
         if ("value" in data) {
