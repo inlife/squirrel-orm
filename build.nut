@@ -129,7 +129,7 @@ class ORM.Field.Basic {
         local primary   = this.__primary ? "PRIMARY KEY" : "";
 
         // default value
-        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.__value : "";
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.encode(this.__value) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",
@@ -159,7 +159,6 @@ class ORM.Field.Basic {
     function encode(currentValue) {
         return currentValue;
     }
-
     
     /**
      * Method that decodes value
