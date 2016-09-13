@@ -1,9 +1,10 @@
 dofile("index.nut", true);
 
+/**
+ * Glorious testing suite
+ */
 __passed <- 0;
 __total  <- 0;
-
-::print("Starting test for squirrel-orm:\n");
 
 function is(condition, exp) {
     try {
@@ -20,6 +21,11 @@ function describe(text, data) {
     data();
 }
 
+::print("Starting test for squirrel-orm:\n");
+
+/**
+ * Actual test cases
+ */
 describe("Testing defines", function() {
     is("ORM.Query defined", ORM.Query);
     is("ORM.Entity defined", ORM.Entity);
@@ -49,6 +55,9 @@ describe("Testing Query", function() {
 
     local q = ORM.Query("select * from table where a = :param").setParameter("param", 2).compile();
     is("Query compile expressions with parameters", q == "select * from table where a = 2");
+
+    local q = ORM.Query("select * from table where a = :param").setParameter("param", "somestr").compile();
+    is("Query able to escape string parameter", q == "select * from table where a = 'somestr'");
 
     class TestingOne extends ORM.Entity {
         static classname = "Testing";
@@ -92,4 +101,11 @@ describe("Testing Query", function() {
     });
 });
 
+describe("Testing ORM.Fields", function() {
+
+});
+
+/**
+ * Results
+ */
 ::print(format("\nTotal passed %d/%d, total failed %d.\n", __passed, __total, __total - __passed));

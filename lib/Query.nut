@@ -147,6 +147,11 @@ class ORM.Query {
         foreach (index, value in this.__matched.parameters) {
             if (value == UNDEFINED) throw "ORM.Query: you didn't provided data for parameter: " + index;
 
+            // simple escape if string
+            if (typeof(value) == "string") {
+                value = format("'%s'", value);
+            }
+
             // replace data to table names
             query = ORM.Utils.String.replace(":" + index, value, query);
         }
