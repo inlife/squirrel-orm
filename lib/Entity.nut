@@ -80,7 +80,7 @@ class ORM.Entity {
         // this.__data["_uid"] <- _uid();
         // this.__data["_entity"] <- typeof(this);
 
-        this.__attachField( ORM.Field.Id({ name = "_uid" }));
+        this.__attachField( ORM.Field.Id({ name = "id" }));
         this.__attachField( ORM.Field.String({ name = "_entity", value = this.classname }));
 
         // attach field described in entity class
