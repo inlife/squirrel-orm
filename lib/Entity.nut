@@ -359,8 +359,11 @@ class ORM.Entity {
     function _tostring() {
         return this.classname;
     }
+    
+    function clean() {
 
-    // TODO: make entities able to detach and clear memory
+    }
+
+    // TODO: make entities able to detach
     function detach() {}
-    function clean() {}
 }

@@ -158,6 +158,26 @@ class ORM.Query {
     }
 
     /**
+     * Cleaning up object
+     * @return Object this
+     */
+    function cleanup() {
+        this.__compiled = null;
+        this.__raw = null;
+
+        if ("entities" in this.__matched) {
+            this.__matched.entities = null;
+        }
+
+        if ("parameters" in this.__matched) {
+            this.__matched.parameters = null;
+        }
+
+        this.__matched = null;
+        return this;
+    }
+
+    /**
      * Function proxyies hydration of given data
      * to a specific entity hydrator
      * @return {ORM.Entity|mixed} Created and hydrated (populated with given data) entity or mixed data
@@ -188,7 +208,7 @@ class ORM.Query {
             return callback ? callback(err, err ? false : true) : null;
         });
 
-        return this;
+        return this.cleanup();
     }
 
     /**
@@ -213,7 +233,7 @@ class ORM.Query {
             callback(null, hydrated);
         });
 
-        return this;
+        return this.cleanup();
     }
 
     /**
@@ -238,6 +258,6 @@ class ORM.Query {
             callback(null, hydrated);
         });
 
-        return this;
+        return this.cleanup();
     }
 }
