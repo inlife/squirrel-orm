@@ -77,9 +77,6 @@ class ORM.Entity {
         this.__modified = [];
         this.__fields = {};
 
-        // this.__data["_uid"] <- _uid();
-        // this.__data["_entity"] <- typeof(this);
-
         this.__attachField( ORM.Field.Id({ name = "id" }));
         this.__attachField( ORM.Field.String({ name = "_entity", value = this.classname }));
 
@@ -255,11 +252,11 @@ class ORM.Entity {
             }
 
             // create and execute cute query
-            local query = ORM.Query("UPDATE `:table` SET :values WHERE `_uid` = :uid");
+            local query = ORM.Query("UPDATE `:table` SET :values WHERE `id` = :id");
 
             query.setParameter("table", this.table);
             query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this));
-            query.setParameter("uid", this.get("_uid"));
+            query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
         } else {
@@ -288,7 +285,7 @@ class ORM.Entity {
                     throw "ORM.Entity: coundn't assign id after insertion; check the query or smth else.";
                 }
 
-                self.__data["_uid"] = result["id"];
+                self.__data["id"] = result["id"];
                 self.__persisted = true;
 
                 return callback ? callback(null, this) : null;
@@ -303,10 +300,10 @@ class ORM.Entity {
      */
     function remove(callback = null) {
         if (this.__persisted) {
-            local query = ORM.Query("DELETE FROM `:table` WHERE `_uid` = :uid");
+            local query = ORM.Query("DELETE FROM `:table` WHERE `id` = :id");
 
             query.setParameter("table", this.table);
-            query.setParameter("uid", this.get("_uid"));
+            query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
         }

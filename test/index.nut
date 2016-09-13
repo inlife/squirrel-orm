@@ -87,7 +87,7 @@ describe("Testing Query", function() {
 
     ORM.Driver.setProxy(function(q, cb) {
         cb(null, [
-            { _uid = 1, _entity = "TestingTwo", other = 124 }
+            { id = 1, _entity = "TestingTwo", other = 124 }
         ]);
     });
 
@@ -95,9 +95,9 @@ describe("Testing Query", function() {
         is("Query able to build entity object from plain data", 
             (results instanceof TestingTwo) &&
             (results instanceof ORM.Entity) &&
-            (results.get("_uid") == 1) &&
+            (results.get("id") == 1) &&
             (results.get("other") == 124)
-        )
+        );
     });
 });
 

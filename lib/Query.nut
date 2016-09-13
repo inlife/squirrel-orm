@@ -193,7 +193,7 @@ class ORM.Query {
 
         // just proxy data if no special keys
         // (custom select fields case)
-        if (!("_uid" in data && "_entity" in data)) return data;
+        if (!("id" in data && "_entity" in data)) return data;
 
         // extract entity class by name
         local entityClass = compilestring("return " + data._entity + ";")();
