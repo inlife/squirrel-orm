@@ -28,6 +28,7 @@ __orm_include("Field/Timestamp");
 
 __orm_include("Trait/Interface");
 __orm_include("Trait/Positionable");
+__orm_include("Trait/Rotationable");
 
 __orm_include("Utils/String");
 __orm_include("Utils/Array");
