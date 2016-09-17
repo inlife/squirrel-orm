@@ -656,9 +656,9 @@ class ORM.Query {
             if (value == UNDEFINED) throw "ORM.Query: you didn't provided data for parameter: " + index;
 
             // simple escape if string
-            if (typeof(value) == "string") {
-                value = format("'%s'", value);
-            }
+            // if (typeof(value) == "string") {
+            //     value = format("'%s'", value);
+            // }
 
             // replace data to table names
             query = ORM.Utils.String.replace(":" + index, value, query);
