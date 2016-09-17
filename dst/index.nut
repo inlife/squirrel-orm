@@ -405,7 +405,7 @@ class ORM.Utils.Formatter {
             local field = entity.__fields[name];
             local value = entity.__data[name];
 
-            result.push(format("`%s` = %s", field.getName(), field.encode(value)));
+            result.push(format("`%s` = ", field.getName()) + field.encode(value));
         }
 
         return ORM.Utils.Array.join(result, ",");
