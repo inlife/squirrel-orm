@@ -31,6 +31,12 @@ class ORM.Entity {
     static traits = [];
 
     /**
+     * Inner storage for initialized entities
+     * @type {Object}
+     */
+    static __initialized = {};
+
+    /**
      * Table with stored/loaded data
      * @type {Object}
      */
@@ -73,17 +79,44 @@ class ORM.Entity {
             throw "ORM.Entity: you've have to declare classname in your inherited entity class.";
         }
 
+        if (this.table == UNDEFINED) {
+            throw "ORM.Entity: you have to declare table name for your entity class " + this.classname;
+        }
+
+        // set up emtpty data storages
         this.__data = {};
         this.__modified = [];
-        this.__fields = {};
 
-        this.__attachField( ORM.Field.Id({ name = "id" }));
-        this.__attachField( ORM.Field.String({ name = "_entity", value = this.classname }));
+        // call init (calls only one time per entity)
+        this.initialize();
 
-        // attach field described in entity class
+        // fill in default values
         foreach (idx, field in this.fields) {
-            this.__attachField(field);
+            this.__data[field.__name] <- field.__value;
         }
+    }
+
+    function initialize() {
+        if (this.classname in this.__initialized) {
+            return;
+        }
+
+        // validate user-defined fields
+        foreach (idx, field in this.fields) {
+            if (!(field instanceof ORM.Field.Basic)) {
+                throw "ORM.Entity: you've tried to attach non-inherited field. Dont do dis.";
+            }
+        }
+
+        // reverse current defined fields (to add at the beginning)
+        this.fields.reverse();
+
+        // add default fields
+        this.fields.push(ORM.Field.String({ name = "_entity", value = this.classname }));
+        this.fields.push(ORM.Field.Id({ name = "id" }));
+        
+        // reverse back to normal order
+        this.fields.reverse();
 
         // inherit traits described in entity class
         foreach (idx, trait in this.traits) {
@@ -93,7 +126,7 @@ class ORM.Entity {
 
             // attach trait fields
             foreach (idx, field in trait.fields) {
-                this.__attachField(field);
+                this.fields.push(field);
             }
             
             // registering methods of trait entities
@@ -103,19 +136,12 @@ class ORM.Entity {
             //     }
             // }
         }
-    }
 
-    /**
-     * Attach (bind) field to this model
-     * @param  {ORM.Field} field
-     */
-    function __attachField(field) {
-        if (!(field instanceof ORM.Field.Basic)) {
-            throw "ORM.Entity: you've tried to attach non-inherited field. Dont do dis.";
-        }
+        // set as initialized (preventing double run)
+        this.__initialized[this.classname] <- 1;
 
-        this.__data[field.__name] <- field.__value;
-        this.__fields[field.__name] <- field;
+        // create table if not exists
+        this.createTable().execute();
     }
 
     /**
@@ -193,10 +219,12 @@ class ORM.Entity {
     static function hydrate(data) {
         local entity = this();
 
-        // load data into model
-        foreach (field, value in data) {
-            if (field in entity.__data && field in entity.__fields) {
-                entity.__data[field] = entity.__fields[field].decode(value);
+        // try to load given data into model
+        foreach (idx, field in entity.fields) {
+            if (field.__name in data) {
+                entity.__data[field.__name] = field.decode(data[field.__name]);
+            } else {
+                entity.__data[field.__name] = field.__value;
             }
         }
 
@@ -216,7 +244,7 @@ class ORM.Entity {
         local table_fields = [];
 
         // compile fields data
-        foreach (idx, field in this.__fields) {
+        foreach (idx, field in this.fields) {
             table_fields.push(field.__create());
         }
 

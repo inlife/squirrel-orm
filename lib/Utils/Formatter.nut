@@ -8,11 +8,10 @@ class ORM.Utils.Formatter {
     static function calculateUpdates(entity) {
         local result = [];
 
-        foreach (idx, name in entity.__modified) {
-            local field = entity.__fields[name];
-            local value = entity.__data[name];
-
-            result.push(format("`%s` = ", field.getName()) + field.encode(value));
+        foreach (idx, field in entity.fields) {
+            if (entity.__modified.find(field.__name) != null) {
+                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));       
+            }
         }
 
         return ORM.Utils.Array.join(result, ",");
@@ -27,7 +26,7 @@ class ORM.Utils.Formatter {
     static function calculateFields(entity) {
         local result = [];
 
-        foreach (name, field in entity.__fields) {
+        foreach (idx, field in entity.fields) {
             if (field instanceof ORM.Field.Id) continue;
             result.push(format("`%s`", field.getName()));
         }
@@ -44,9 +43,9 @@ class ORM.Utils.Formatter {
     static function calculateValues(entity) {
         local result = [];
 
-        foreach (name, field in entity.__fields) {
+        foreach (idx, field in entity.fields) {
             if (field instanceof ORM.Field.Id) continue;
-            result.push(field.encode(entity.__data[name]));
+            result.push(field.encode(entity.__data[field.__name]));
         }
 
         return ORM.Utils.Array.join(result, ",");
