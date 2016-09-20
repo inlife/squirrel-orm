@@ -114,7 +114,7 @@ class ORM.Entity {
         // add default fields
         this.fields.push(ORM.Field.String({ name = "_entity", value = this.classname }));
         this.fields.push(ORM.Field.Id({ name = "id" }));
-        
+
         // reverse back to normal order
         this.fields.reverse();
 

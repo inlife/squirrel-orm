@@ -10,7 +10,7 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (entity.__modified.find(field.__name) != null) {
-                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));       
+                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));
             }
         }
 
