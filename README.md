@@ -108,7 +108,7 @@ Note: **@Player** or **@PlayerItem**, ..., are synonyms for registered model cla
 
 ## Installation:
 
-1. Download in any convinient way to you.
+1. Download in any convinient way to you. (you can download only dst/index.nut)
 2. Put somewhere not far away from your binary (*.exe)
 3. Insert code where you want to use it:
 
@@ -116,14 +116,14 @@ Note: **@Player** or **@PlayerItem**, ..., are synonyms for registered model cla
 // load lib where you want it to work
 // note, path relative to your PWD
 // (Process Working Directory)
-dofile("./orm/lib/index.nut", true);
+dofile("./orm/dst/index.nut", true);
 
 // and set up driver (this example uses simple mysql)
-ORM.Driver.setProxy(function(queryString, cb) {
+ORM.Driver.setProxy(function(queryString, callback) {
     local query = mysql_query(queryString);
     
     // return data inside ORM
-    cb(null, mysql_fetch_assoc(query));
+    callback(null, mysql_fetch_assoc(query));
     
     // free
     mysql_free_result(query);
