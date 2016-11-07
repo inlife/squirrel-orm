@@ -167,14 +167,6 @@ ORM.Driver.setProxy(function(queryString, callback) {
 ORM.Driver.configure({
     provider = "sqlite"
 });
-
-
-if (__DEBUG__EXPORT) {
-    addEventHandler <- function(...) {};
-    addCommandHandler <- function(...) {};
-    createVehicle <- function(...){};
-}
-
 ```
 
 ## Developers
