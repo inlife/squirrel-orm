@@ -112,6 +112,8 @@ Note: **@Player** or **@PlayerItem**, ..., are synonyms for registered model cla
 2. Put somewhere not far away from your binary (*.exe)
 3. Insert code where you want to use it:
 
+Common MySQL example:
+
 ```squirrel
 // load lib where you want it to work
 // note, path relative to your PWD
@@ -130,8 +132,63 @@ ORM.Driver.setProxy(function(queryString, callback) {
 });
 
 // now use it!
+```
+
+Mafia 2 Online SQLite example:
+```squirrel
+// load lib where you want it to work
+// note, path relative to your PWD
+// (Process Working Directory)
+dofile("./orm/dst/index.nut", true);
+
+ORM.Driver.setProxy(function(queryString, callback) {
+    local result = [];
+    local tmp = connection.query(queryString);
+
+    // manuanlly push sqlite forced last inserted id after insert
+    if (queryString.slice(0, 6).toupper() == "INSERT") {
+        tmp = connection.query("select last_insert_rowid() as id");
+    }
+
+    // override empty result
+    if (!tmp) tmp = [];
+
+    // override tmp indexes
+    foreach (idx, value in tmp) {
+        result.push(value);
+    }
+
+    // return data inside ORM
+    callback(null, result);
+});
+
+// NOTE: configuring orm to work
+// with sqlite (some differences)
+ORM.Driver.configure({
+    provider = "sqlite"
+});
+
+
+if (__DEBUG__EXPORT) {
+    addEventHandler <- function(...) {};
+    addCommandHandler <- function(...) {};
+    createVehicle <- function(...){};
+}
 
 ```
+
+## Developers
+If You want, you can help with development of this library. All you need to do is to clone it locally, and start doing stuff. However you need to have installed squirrel binary `sq` :p
+
+### Unit testing
+Also, there is a testing suite, (unit testing) to test if stuff still works after your changes. 
+
+To run it, use: `sq test/index.nut`
+(You dont need actual database to test most of those). Look inside test/index.nut for details.
+
+### Building
+After you've successfuly tested all the stuff, you can now build composited file via `./build.sh`.
+And submit pull request! :p
 
 ## License
 Check out [LICENSE](LICENSE)
