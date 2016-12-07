@@ -97,8 +97,8 @@ local q = ORM.Query("
 	where p.id = :id and pi.id = :item_id
 ");
 
-q.setParameter('id', 15);
-q.setParameter('item_id', 2424);
+q.setParameter("id", 15);
+q.setParameter("item_id", 2424);
 
 q.getSingleResult(function(err, data) {
 	::print(data["inventory"]);
