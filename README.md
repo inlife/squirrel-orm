@@ -72,7 +72,9 @@ Player.findOneBy({ id = 15 }, function(err, player) {
 
 // or delete all of them
 Player.findAll(function(err, players) {
-	player.remove();
+	foreach (idx, player in players) {
+		player.remove();
+	}
 });
 ```
 
