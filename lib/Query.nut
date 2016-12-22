@@ -109,7 +109,9 @@ class ORM.Query {
      * @param {mixed} value
      */
     function setParameter(name, value) {
-        // TODO: add validation and escaping to "value"
+        if (typeof value == "string") {
+            value = escape(value);
+        }
 
         try {
             this.__matched.parameters[name] = value;

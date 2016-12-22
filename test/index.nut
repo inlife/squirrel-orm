@@ -90,13 +90,16 @@ describe("ORM.Query", function(it) {
     });
 
     ORM.Query("select * from tbl").getSingleResult(function(err, results) {
-        it("should be able to build entity object from plain data", 
+        it("should be able to build entity object from plain data",
             (results instanceof TestingTwo) &&
             (results instanceof ORM.Entity) &&
             (results.get("id") == 1) &&
             (results.get("other") == 124)
         );
     });
+
+    local q = ORM.Query("select * from @TestingOne where name = ':value'").setParameter("value", "asd' OR 1 = 1").compile();
+    it("should escape expressions with possible sql injects", q == "select * from tbl_tst where name = 'asd\\' OR 1 = 1'");
 });
 
 describe("ORM.Fields", function(it) {
@@ -129,7 +132,7 @@ describe("ORM.Entity", function(it) {
 
     it("should have field foo", a.fields[2].__name == "foo");
     // print(b.fields[0].__name);
-    // 
+    //
 });
 
 /**

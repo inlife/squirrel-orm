@@ -2,7 +2,7 @@ class ORM.Field.String extends ORM.Field.Basic {
     static type = "varchar";
     static size = 255;
     static value = "";
-    
+
     /**
      * Method that encodes value
      * according to field class
@@ -10,7 +10,7 @@ class ORM.Field.String extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return format("'%s'", currentValue.tostring());
+        return format("'%s'", escape(currentValue.tostring()));
     }
 
     /**

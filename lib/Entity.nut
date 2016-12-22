@@ -1,13 +1,13 @@
 /**
  * ORM.Entity is a class that must be inherited
- * 
+ *
  * Entity is a equialent to a database table,
  * which have more convinient method to access, modify and store the data
  *
  * Every inherited entity must describe it's own table name;
  */
 class ORM.Entity {
-    
+
     /**
      * Didn't find any way to get current classname
      * so, we need to set it up manually
@@ -45,30 +45,30 @@ class ORM.Entity {
     /**
      * Array that keeps names of modified fields
      * (changed since last save/load)
-     * 
+     *
      * @type {Array}
      */
     __modified = null;
 
     /**
-     * Field store information about 
+     * Field store information about
      * fields that were attached to entity
-     * 
+     *
      * @type {Object}
      */
     __fields = null;
 
     /**
      * Field that tracks if entity is destroyed
-     * 
+     *
      * @type {Boolean}
      */
     __destroyed = false;
 
     /**
-     * Field that tracks if the entity 
+     * Field that tracks if the entity
      * was ever persisted to storage
-     * 
+     *
      * @type {Boolean}
      */
     __persisted = false;
@@ -128,7 +128,7 @@ class ORM.Entity {
             foreach (idx, field in trait.fields) {
                 this.fields.push(field);
             }
-            
+
             // registering methods of trait entities
             // foreach (idx, field in trait) {
             //     if (typeof(field) == "function") {
@@ -147,7 +147,7 @@ class ORM.Entity {
     /**
      * Method sets object field
      * and marks it as modified
-     * 
+     *
      * @param {string} name
      * @param {mixed} value
      */
@@ -157,7 +157,7 @@ class ORM.Entity {
 
     /**
      * Method gets value by field name
-     * 
+     *
      * @param {string} name
      */
     function get(name) {
@@ -209,10 +209,10 @@ class ORM.Entity {
     }
 
     /**
-     * Static method creates and "hydrates" 
+     * Static method creates and "hydrates"
      * (populates) model based on plain data
      * and returns created object
-     * 
+     *
      * @param  {Object} data
      * @return {ORM.Entity}
      */
@@ -306,7 +306,7 @@ class ORM.Entity {
             // try to read result and save last inserted id
             // as current entity id, and mark as persisted
             return query.getSingleResult(function(err, result) {
-                if (err && callback) return callback(err, null); 
+                if (err && callback) return callback(err, null);
 
                 // TODO: test for last insert id for mysql&sqlite
                 if (!("id" in result)) {
@@ -355,7 +355,7 @@ class ORM.Entity {
      */
     static function findBy(condition, callback) {
         local query = ORM.Query("SELECT * FROM `:table` :condition")
-        
+
         query.setParameter("table", table);
         query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
 
@@ -370,7 +370,7 @@ class ORM.Entity {
      */
     static function findOneBy(condition, callback) {
         local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
-        
+
         query.setParameter("table", table);
         query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
 
@@ -384,7 +384,7 @@ class ORM.Entity {
     function _tostring() {
         return this.classname;
     }
-    
+
     function clean() {
 
     }

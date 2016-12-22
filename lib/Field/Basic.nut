@@ -149,7 +149,7 @@ class ORM.Field.Basic {
 
         return this.__name.tolower();
     }
-    
+
     /**
      * Method that encodes value
      * according to field class
@@ -159,7 +159,7 @@ class ORM.Field.Basic {
     function encode(currentValue) {
         return currentValue;
     }
-    
+
     /**
      * Method that decodes value
      * according to field class
