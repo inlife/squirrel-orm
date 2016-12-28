@@ -17,7 +17,7 @@ class ORM.Entity {
 
     /**
      * Set up tablename that will be used for entity
-     * @type {[type]}
+     * @type {String}
      */
     static table = UNDEFINED;
 

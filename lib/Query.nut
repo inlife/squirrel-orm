@@ -15,7 +15,7 @@ class ORM.Query {
 
     /**
      * Fild stores current compiled query
-     * @type {[type]}
+     * @type {String}
      */
     __compiled = null;
 
