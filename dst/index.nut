@@ -1067,19 +1067,19 @@ class ORM.Entity {
             return query.execute(callback);
         } else {
             // create and execute even cuter query
-            local lastid = "LAST_INSERT_ID";
+            // local lastid = "LAST_INSERT_ID";
 
-            // special check for sqlite
-            if (ORM.Driver.storage.provider == "sqlite") {
-                lastid = "last_insert_rowid";
-            }
+            // // special check for sqlite
+            // if (ORM.Driver.storage.provider == "sqlite") {
+            //     lastid = "last_insert_rowid";
+            // }
 
-            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values); SELECT :lastid() as id;");
+            local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values);");
 
             query.setParameter("table", this.table);
             query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
             query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
-            query.setParameter("lastid", lastid);
+            // query.setParameter("lastid", lastid);
 
             // try to read result and save last inserted id
             // as current entity id, and mark as persisted
@@ -1122,6 +1122,9 @@ class ORM.Entity {
      * @param  {Function} callback
      */
     static function findAll(callback) {
+        // call init (calls only one time per entity)
+        this.initialize();
+
         return ORM.Query("SELECT * FROM `:table`").setParameter("table", table).getResult(callback);
     }
 
@@ -1132,6 +1135,9 @@ class ORM.Entity {
      * @param  {Function} callback
      */
     static function findBy(condition, callback) {
+        // call init (calls only one time per entity)
+        this.initialize();
+
         local query = ORM.Query("SELECT * FROM `:table` :condition")
 
         query.setParameter("table", table);
@@ -1147,6 +1153,9 @@ class ORM.Entity {
      * @param  {Function} callback
      */
     static function findOneBy(condition, callback) {
+        // call init (calls only one time per entity)
+        this.initialize();
+
         local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
 
         query.setParameter("table", table);
