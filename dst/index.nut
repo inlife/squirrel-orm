@@ -240,7 +240,7 @@ class ORM.Field.String extends ORM.Field.Text {
     static size = 255;
     static value = "";
 }
-class ORM.Field.Text extends ORM.Field.String {
+class ORM.Field.Text extends ORM.Field.Basic {
     static type = "text";
 
     /**
