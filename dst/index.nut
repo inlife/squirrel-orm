@@ -235,11 +235,6 @@ class ORM.Field.Float extends ORM.Field.Basic {
         return encodedValue.tofloat();
     }
 }
-class ORM.Field.String extends ORM.Field.Text {
-    static type = "varchar";
-    static size = 255;
-    static value = "";
-}
 class ORM.Field.Text extends ORM.Field.Basic {
     static type = "text";
 
@@ -262,6 +257,11 @@ class ORM.Field.Text extends ORM.Field.Basic {
     function decode(encodedValue) {
         return encodedValue.tostring();
     }
+}
+class ORM.Field.String extends ORM.Field.Text {
+    static type = "varchar";
+    static size = 255;
+    static value = "";
 }
 class ORM.Field.Bool extends ORM.Field.Basic {
     static type = "tinyint";
