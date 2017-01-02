@@ -115,8 +115,8 @@ class ORM.Field.Basic {
 
         // metadata
         local nullable  = this.__nullable ? "NULL" : "NOT NULL";
-        local autoinc   = this.__autoinc ? "AUTO_INCREMENT" : "";
-        local primary   = this.__primary ? "PRIMARY KEY" : "";
+        local autoinc   = this.__autoinc  ? "AUTO_INCREMENT" : "";
+        local primary   = this.__primary  ? "PRIMARY KEY" : "";
 
         // special override for sqlite
         if (ORM.Driver.storage.provider == "sqlite") {
@@ -129,7 +129,7 @@ class ORM.Field.Basic {
         }
 
         // default value
-        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.encode(this.__value) : "";
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + ORM.Utils.Formatter.escape( this.encode(this.__value) ) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",

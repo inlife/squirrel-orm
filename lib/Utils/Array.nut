@@ -3,7 +3,7 @@ class ORM.Utils.Array {
      * Join array using sep as separator
      * Author: @Stormeus
      * http://forum.vc-mp.org/?topic=3226.0
-     * 
+     *
      * @param  {Array} arr
      * @param  {String} sep
      * @return {String}

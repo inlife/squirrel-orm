@@ -253,8 +253,8 @@ class ORM.Entity {
         // create query and fill data
         local query = ORM.Query("CREATE TABLE IF NOT EXISTS `:table` (:fields)");
 
-        query.setParameter("table", table_name);
-        query.setParameter("fields", ORM.Utils.Array.join(table_fields, ","));
+        query.setParameter("table", table_name, true);
+        query.setParameter("fields", ORM.Utils.Array.join(table_fields, ","), true);
 
         return query;
     }
@@ -282,8 +282,8 @@ class ORM.Entity {
             // create and execute cute query
             local query = ORM.Query("UPDATE `:table` SET :values WHERE `id` = :id");
 
-            query.setParameter("table", this.table);
-            query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this));
+            query.setParameter("table", this.table, true);
+            query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this), true);
             query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
@@ -298,9 +298,9 @@ class ORM.Entity {
 
             local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values);");
 
-            query.setParameter("table", this.table);
-            query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
-            query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
+            query.setParameter("table", this.table, true);
+            query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this), true);
+            query.setParameter("values", ORM.Utils.Formatter.calculateValues(this), true);
             // query.setParameter("lastid", lastid);
 
             // try to read result and save last inserted id
@@ -330,7 +330,7 @@ class ORM.Entity {
         if (this.__persisted) {
             local query = ORM.Query("DELETE FROM `:table` WHERE `id` = :id");
 
-            query.setParameter("table", this.table);
+            query.setParameter("table", this.table, true);
             query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
@@ -347,7 +347,7 @@ class ORM.Entity {
         // call init (calls only one time per entity)
         this.initialize();
 
-        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table).getResult(callback);
+        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table, true).getResult(callback);
     }
 
     /**
@@ -362,8 +362,8 @@ class ORM.Entity {
 
         local query = ORM.Query("SELECT * FROM `:table` :condition")
 
-        query.setParameter("table", table);
-        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+        query.setParameter("table", table, true);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition), true);
 
         return query.getResult(callback);
     }
@@ -380,8 +380,8 @@ class ORM.Entity {
 
         local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
 
-        query.setParameter("table", table);
-        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+        query.setParameter("table", table, true);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition), true);
 
         return query.getSingleResult(callback);
     }

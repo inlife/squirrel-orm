@@ -10,7 +10,7 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (entity.__modified.find(field.__name) != null) {
-                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));
+                result.push(format("`%s` = ", field.getName()) + this.escape( field.encode(entity.__data[field.__name]) ));
             }
         }
 
@@ -45,14 +45,10 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (field instanceof ORM.Field.Id) continue;
-            result.push(field.encode(entity.__data[field.__name]));
+            result.push(this.escape( field.encode(entity.__data[field.__name]) ));
         }
 
         return ORM.Utils.Array.join(result, ",");
-    }
-
-    static function escape(value) {
-        return (typeof(value) == "string" || typeof(value) == "bool" ? "'" + value + "'" : value).tostring();
     }
 
     /**
@@ -68,7 +64,7 @@ class ORM.Utils.Formatter {
 
         if (typeof(condition) != "table") {
             throw "ORM.Query: you have to provide table or a string as a condition to a query";
-        } 
+        }
 
         // skip if empty
         if (condition.len() < 1) {
@@ -82,5 +78,14 @@ class ORM.Utils.Formatter {
         }
 
         return "WHERE " + ORM.Utils.Array.join(result, " AND ");
+    }
+
+    /**
+     * Escape value
+     * @param  {Mixed} value
+     * @return {Mixed}
+     */
+    static function escape(value) {
+        return (typeof(value) == "string" ? "'" + ORM.Utils.String.escape(value) + "'" : value.tostring());
     }
 }

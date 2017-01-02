@@ -107,10 +107,11 @@ class ORM.Query {
      * throws error if parameter was not created
      * @param {string} name
      * @param {mixed} value
+     * @param {Boolean} skipEscaping should we skip escaping for this query (for occansions when its already escaped)
      */
-    function setParameter(name, value) {
-        if (typeof value == "string") {
-            value = escape(value);
+    function setParameter(name, value, skipEscaping = false) {
+        if (!skipEscaping) {
+            value = ORM.Utils.Formatter.escape(value);
         }
 
         try {

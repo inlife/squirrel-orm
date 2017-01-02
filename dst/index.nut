@@ -131,8 +131,8 @@ class ORM.Field.Basic {
 
         // metadata
         local nullable  = this.__nullable ? "NULL" : "NOT NULL";
-        local autoinc   = this.__autoinc ? "AUTO_INCREMENT" : "";
-        local primary   = this.__primary ? "PRIMARY KEY" : "";
+        local autoinc   = this.__autoinc  ? "AUTO_INCREMENT" : "";
+        local primary   = this.__primary  ? "PRIMARY KEY" : "";
 
         // special override for sqlite
         if (ORM.Driver.storage.provider == "sqlite") {
@@ -145,7 +145,7 @@ class ORM.Field.Basic {
         }
 
         // default value
-        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.encode(this.__value) : "";
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + ORM.Utils.Formatter.escape( this.encode(this.__value) ) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",
@@ -237,6 +237,7 @@ class ORM.Field.Float extends ORM.Field.Basic {
 }
 class ORM.Field.Text extends ORM.Field.Basic {
     static type = "text";
+    static value = "";
 
     /**
      * Method that encodes value
@@ -245,7 +246,7 @@ class ORM.Field.Text extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return format("'%s'", escape(currentValue.tostring()));
+        return currentValue.tostring();
     }
 
     /**
@@ -261,7 +262,6 @@ class ORM.Field.Text extends ORM.Field.Basic {
 class ORM.Field.String extends ORM.Field.Text {
     static type = "varchar";
     static size = 255;
-    static value = "";
 }
 class ORM.Field.Bool extends ORM.Field.Basic {
     static type = "tinyint";
@@ -323,7 +323,6 @@ class ORM.Trait.Rotationable extends ORM.Trait.Interface {
     ];
 }
 class ORM.Utils.String {
-    
     /**
      * Replace occurances of "search" to "replace" in the "subject"
      * @param  {string} search
@@ -352,13 +351,78 @@ class ORM.Utils.String {
         return result;
     }
 
+    /**
+     * Escape strings according to http://www.json.org/ spec
+     * @param {String} str
+     */
+    function escape(str) {
+        local res = "";
+
+        for (local i = 0; i < str.len(); i++) {
+
+            local ch1 = (str[i] & 0xFF);
+
+            if ((ch1 & 0x80) == 0x00) {
+                // 7-bit Ascii
+
+                ch1 = format("%c", ch1);
+
+                if (ch1 == "\'") {
+                    res += "\\\'";
+                } else if (ch1 == "\"") {
+                    res += "\\\"";
+                } else if (ch1 == "\\") {
+                    res += "\\\\";
+                } else if (ch1 == "/") {
+                    res += "\\/";
+                } else if (ch1 == "\b") {
+                    res += "\\b";
+                } else if (ch1 == "\f") {
+                    res += "\\f";
+                } else if (ch1 == "\n") {
+                    res += "\\n";
+                } else if (ch1 == "\r") {
+                    res += "\\r";
+                } else if (ch1 == "\t") {
+                    res += "\\t";
+                } else if (ch1 == "\0") {
+                    res += "\\u0000";
+                } else {
+                    res += ch1;
+                }
+
+            } else {
+
+                if ((ch1 & 0xE0) == 0xC0) {
+                    // 110xxxxx = 2-byte unicode
+                    local ch2 = (str[++i] & 0xFF);
+                    res += format("%c%c", ch1, ch2);
+                } else if ((ch1 & 0xF0) == 0xE0) {
+                    // 1110xxxx = 3-byte unicode
+                    local ch2 = (str[++i] & 0xFF);
+                    local ch3 = (str[++i] & 0xFF);
+                    res += format("%c%c%c", ch1, ch2, ch3);
+                } else if ((ch1 & 0xF8) == 0xF0) {
+                    // 11110xxx = 4 byte unicode
+                    local ch2 = (str[++i] & 0xFF);
+                    local ch3 = (str[++i] & 0xFF);
+                    local ch4 = (str[++i] & 0xFF);
+                    res += format("%c%c%c%c", ch1, ch2, ch3, ch4);
+                }
+
+            }
+        }
+
+        return res;
+    }
+
 }
 class ORM.Utils.Array {
     /**
      * Join array using sep as separator
      * Author: @Stormeus
      * http://forum.vc-mp.org/?topic=3226.0
-     * 
+     *
      * @param  {Array} arr
      * @param  {String} sep
      * @return {String}
@@ -404,7 +468,7 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (entity.__modified.find(field.__name) != null) {
-                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));
+                result.push(format("`%s` = ", field.getName()) + this.escape( field.encode(entity.__data[field.__name]) ));
             }
         }
 
@@ -439,14 +503,10 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (field instanceof ORM.Field.Id) continue;
-            result.push(field.encode(entity.__data[field.__name]));
+            result.push(this.escape( field.encode(entity.__data[field.__name]) ));
         }
 
         return ORM.Utils.Array.join(result, ",");
-    }
-
-    static function escape(value) {
-        return (typeof(value) == "string" || typeof(value) == "bool" ? "'" + value + "'" : value).tostring();
     }
 
     /**
@@ -462,7 +522,7 @@ class ORM.Utils.Formatter {
 
         if (typeof(condition) != "table") {
             throw "ORM.Query: you have to provide table or a string as a condition to a query";
-        } 
+        }
 
         // skip if empty
         if (condition.len() < 1) {
@@ -476,6 +536,15 @@ class ORM.Utils.Formatter {
         }
 
         return "WHERE " + ORM.Utils.Array.join(result, " AND ");
+    }
+
+    /**
+     * Escape value
+     * @param  {Mixed} value
+     * @return {Mixed}
+     */
+    static function escape(value) {
+        return (typeof(value) == "string" ? "'" + ORM.Utils.String.escape(value) + "'" : value.tostring());
     }
 }
 class ORM.Driver {
@@ -615,10 +684,11 @@ class ORM.Query {
      * throws error if parameter was not created
      * @param {string} name
      * @param {mixed} value
+     * @param {Boolean} skipEscaping should we skip escaping for this query (for occansions when its already escaped)
      */
-    function setParameter(name, value) {
-        if (typeof value == "string") {
-            value = escape(value);
+    function setParameter(name, value, skipEscaping = false) {
+        if (!skipEscaping) {
+            value = ORM.Utils.Formatter.escape(value);
         }
 
         try {
@@ -1031,8 +1101,8 @@ class ORM.Entity {
         // create query and fill data
         local query = ORM.Query("CREATE TABLE IF NOT EXISTS `:table` (:fields)");
 
-        query.setParameter("table", table_name);
-        query.setParameter("fields", ORM.Utils.Array.join(table_fields, ","));
+        query.setParameter("table", table_name, true);
+        query.setParameter("fields", ORM.Utils.Array.join(table_fields, ","), true);
 
         return query;
     }
@@ -1060,8 +1130,8 @@ class ORM.Entity {
             // create and execute cute query
             local query = ORM.Query("UPDATE `:table` SET :values WHERE `id` = :id");
 
-            query.setParameter("table", this.table);
-            query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this));
+            query.setParameter("table", this.table, true);
+            query.setParameter("values", ORM.Utils.Formatter.calculateUpdates(this), true);
             query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
@@ -1076,9 +1146,9 @@ class ORM.Entity {
 
             local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values);");
 
-            query.setParameter("table", this.table);
-            query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this));
-            query.setParameter("values", ORM.Utils.Formatter.calculateValues(this));
+            query.setParameter("table", this.table, true);
+            query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this), true);
+            query.setParameter("values", ORM.Utils.Formatter.calculateValues(this), true);
             // query.setParameter("lastid", lastid);
 
             // try to read result and save last inserted id
@@ -1108,7 +1178,7 @@ class ORM.Entity {
         if (this.__persisted) {
             local query = ORM.Query("DELETE FROM `:table` WHERE `id` = :id");
 
-            query.setParameter("table", this.table);
+            query.setParameter("table", this.table, true);
             query.setParameter("id", this.get("id"));
 
             return query.execute(callback);
@@ -1125,7 +1195,7 @@ class ORM.Entity {
         // call init (calls only one time per entity)
         this.initialize();
 
-        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table).getResult(callback);
+        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table, true).getResult(callback);
     }
 
     /**
@@ -1140,8 +1210,8 @@ class ORM.Entity {
 
         local query = ORM.Query("SELECT * FROM `:table` :condition")
 
-        query.setParameter("table", table);
-        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+        query.setParameter("table", table, true);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition), true);
 
         return query.getResult(callback);
     }
@@ -1158,8 +1228,8 @@ class ORM.Entity {
 
         local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
 
-        query.setParameter("table", table);
-        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition));
+        query.setParameter("table", table, true);
+        query.setParameter("condition", ORM.Utils.Formatter.calculateCondition(condition), true);
 
         return query.getSingleResult(callback);
     }

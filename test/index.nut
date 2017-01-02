@@ -98,7 +98,7 @@ describe("ORM.Query", function(it) {
         );
     });
 
-    local q = ORM.Query("select * from @TestingOne where name = ':value'").setParameter("value", "asd' OR 1 = 1").compile();
+    local q = ORM.Query("select * from @TestingOne where name = :value").setParameter("value", "asd' OR 1 = 1").compile();
     it("should escape expressions with possible sql injects", q == "select * from tbl_tst where name = 'asd\\' OR 1 = 1'");
 });
 

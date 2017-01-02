@@ -1,5 +1,6 @@
 class ORM.Field.Text extends ORM.Field.Basic {
     static type = "text";
+    static value = "";
 
     /**
      * Method that encodes value
@@ -8,7 +9,7 @@ class ORM.Field.Text extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return format("'%s'", escape(currentValue.tostring()));
+        return currentValue.tostring();
     }
 
     /**
