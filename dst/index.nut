@@ -650,6 +650,10 @@ class ORM.Query {
                 // extract entity class by name
                 local entityClass = compilestring("return " + entityName + ";")();
 
+                // try to initialize emtity
+                // if not was not previously
+                entityClass.initialize();
+
                 // save it to local storage
                 this.__matched.entities[entityName] <- entityClass;
             } catch (e) {

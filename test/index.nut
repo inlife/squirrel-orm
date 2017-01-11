@@ -54,6 +54,10 @@ describe("ORM.Query", function(it) {
     local q = ORM.Query("select * from table where a = :param").setParameter("param", 2).compile();
     it("should compile expressions with parameters", q == "select * from table where a = 2");
 
+    local q = ORM.Query("select * from table where a = :param or b = :param").setParameter("param", 2).compile();
+    it("should compile expressions with multiple occurances of sme parameters", q == "select * from table where a = 2 or b = 2");
+
+
     // local q = ORM.Query("select * from table where a = :param").setParameter("param", "somestr").compile();
     // is("Query able to escape string parameter", q == "select * from table where a = 'somestr'");
 
