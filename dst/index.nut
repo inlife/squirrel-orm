@@ -960,6 +960,17 @@ class ORM.Entity {
             }
         }
 
+        // special check for extended entity class
+        if (this.fields.len() > 1) {
+            if (this.fields[0].getName() == "id") {
+                this.fields.remove(0);
+            }
+
+            if (this.fields[0].getName() == "_entity") {
+                this.fields.remove(0);
+            }
+        }
+
         // reverse current defined fields (to add at the beginning)
         this.fields.reverse();
 

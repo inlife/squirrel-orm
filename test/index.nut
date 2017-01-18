@@ -135,8 +135,18 @@ describe("ORM.Entity", function(it) {
     a.foo = 15;
 
     it("should have field foo", a.fields[2].__name == "foo");
-    // print(b.fields[0].__name);
-    //
+
+    class TestC extends TestA {
+        static classname = "TestC";
+        static table = "tbl_c";
+    }
+
+    local c = TestC();
+    ORM.Driver.setProxy(function(q, cb) {
+        it("should properly extend parent entity", q == "INSERT INTO `tbl_c` (`_entity`,`foo`) VALUES ('TestC',0);")
+        cb(null, [{id = 1}]);
+    });
+    c.save();
 });
 
 /**
