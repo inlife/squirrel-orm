@@ -139,11 +139,18 @@ describe("ORM.Entity", function(it) {
     class TestC extends TestA {
         static classname = "TestC";
         static table = "tbl_c";
+
+        // static fields = [];
+
+        constructor () {
+            base.constructor();
+            this.foo = 15;
+        }
     }
 
     local c = TestC();
     ORM.Driver.setProxy(function(q, cb) {
-        it("should properly extend parent entity", q == "INSERT INTO `tbl_c` (`_entity`,`foo`) VALUES ('TestC',0);")
+        it("should properly extend parent entity", q == "INSERT INTO `tbl_c` (`_entity`,`foo`) VALUES ('TestC',15);")
         cb(null, [{id = 1}]);
     });
     c.save();
