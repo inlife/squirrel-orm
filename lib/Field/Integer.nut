@@ -10,7 +10,7 @@ class ORM.Field.Integer extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return currentValue.tointeger();
+        return currentValue != null ? currentValue.tointeger() : null;
     }
 
     /**
@@ -20,6 +20,6 @@ class ORM.Field.Integer extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function decode(encodedValue) {
-        return encodedValue.tointeger();
+        return encodedValue != null ? encodedValue.tointeger() : null;
     }
 }

@@ -9,7 +9,7 @@ class ORM.Field.Text extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return currentValue.tostring();
+        return currentValue ? currentValue.tostring() : null;
     }
 
     /**
@@ -19,6 +19,6 @@ class ORM.Field.Text extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function decode(encodedValue) {
-        return encodedValue.tostring();
+        return encodedValue ? encodedValue.tostring() : null;
     }
 }

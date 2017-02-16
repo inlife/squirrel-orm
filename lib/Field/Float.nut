@@ -9,7 +9,7 @@ class ORM.Field.Float extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return currentValue.tofloat();
+        return currentValue != null ? currentValue.tofloat() : null;
     }
 
     /**
@@ -19,6 +19,6 @@ class ORM.Field.Float extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function decode(encodedValue) {
-        return encodedValue.tofloat();
+        return encodedValue != null ? encodedValue.tofloat() : null;
     }
 }
