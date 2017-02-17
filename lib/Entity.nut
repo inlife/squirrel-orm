@@ -156,31 +156,31 @@ class ORM.Entity {
     }
 
     /**
-     * Method sets object field
-     * and marks it as modified
-     *
-     * @param {string} name
-     * @param {mixed} value
-     */
-    function set(name, value) {
-        return this[name] = value;
-    }
-
-    /**
-     * Method gets value by field name
-     *
-     * @param {string} name
-     */
-    function get(name) {
-        return this[name];
-    }
-
-    /**
      * Meta impelemtation for set
+     *
      * @param {string} name
      * @param {mixed} value
      */
     function _set(name, value) {
+        return this.set(name, value);
+    }
+
+    /**
+     * Meta implementation for get
+     *
+     * @param {string} name
+     */
+    function _get(name) {
+        return this.get(name);
+    }
+
+    /**
+     * Method sets object field
+     * and marks it as modified
+     * @param {string} name
+     * @param {mixed} value
+     */
+    function set(name, value) {
         if (!name in this.__data) {
             throw null;
         }
@@ -193,11 +193,11 @@ class ORM.Entity {
     }
 
     /**
-     * Meta implementation for get
+     * Method gets value by field name
      * @param  {string} name
      * @return {mixed}
      */
-    function _get(name) {
+    function get(name) {
         if (name in this.__data) {
             return this.__data[name];
         }
@@ -403,6 +403,10 @@ class ORM.Entity {
      */
     function _tostring() {
         return this.classname;
+    }
+
+    function _serialize() {
+        return this.export();
     }
 
     function clean() {
