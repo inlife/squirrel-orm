@@ -86,6 +86,6 @@ class ORM.Utils.Formatter {
      * @return {Mixed}
      */
     static function escape(value) {
-        return (typeof(value) == "string" ? "'" + ORM.Utils.String.escape(value) + "'" : (value != null ? value.tostring() : "NULL"));
+        return (typeof(value) == "string" ? "'" + ORM.Utils.String.escape(value) + "'" : (value != null ? value.tostring() : ""));
     }
 }
