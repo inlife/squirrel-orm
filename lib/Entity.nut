@@ -241,6 +241,7 @@ class ORM.Entity {
 
         // entity came from storage
         entity.__persisted = true;
+        entity.hydrated();
 
         return entity;
     }
@@ -407,6 +408,10 @@ class ORM.Entity {
 
     function _serialize() {
         return this.export();
+    }
+
+    function hydrated() {
+
     }
 
     function clean() {
