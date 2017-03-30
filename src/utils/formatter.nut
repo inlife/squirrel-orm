@@ -1,4 +1,9 @@
-class ORM.Utils.Formatter {
+local array     = require("./array");
+local string    = require("./string");
+local fields    = require("../fields");
+
+class Formatter
+{
     /**
      * Method calculates changes for the entity
      * and transofrms them into a string for a query
@@ -14,7 +19,7 @@ class ORM.Utils.Formatter {
             }
         }
 
-        return ORM.Utils.Array.join(result, ",");
+        return array.join(result, ",");
     }
 
     /**
@@ -27,11 +32,11 @@ class ORM.Utils.Formatter {
         local result = [];
 
         foreach (idx, field in entity.fields) {
-            if (field instanceof ORM.Field.Id) continue;
+            if (field instanceof fields.Id) continue;
             result.push(format("`%s`", field.getName()));
         }
 
-        return ORM.Utils.Array.join(result, ",");
+        return array.join(result, ",");
     }
 
     /**
@@ -44,11 +49,11 @@ class ORM.Utils.Formatter {
         local result = [];
 
         foreach (idx, field in entity.fields) {
-            if (field instanceof ORM.Field.Id) continue;
+            if (field instanceof fields.Id) continue;
             result.push(this.escape( field.encode(entity.__data[field.__name]) ));
         }
 
-        return ORM.Utils.Array.join(result, ",");
+        return array.join(result, ",");
     }
 
     /**
@@ -77,7 +82,7 @@ class ORM.Utils.Formatter {
             result.push(format("`%s` = %s", name, this.escape(value)));
         }
 
-        return "WHERE " + ORM.Utils.Array.join(result, " AND ");
+        return "WHERE " + array.join(result, " AND ");
     }
 
     /**
@@ -86,6 +91,8 @@ class ORM.Utils.Formatter {
      * @return {Mixed}
      */
     static function escape(value) {
-        return (typeof(value) == "string" ? "'" + ORM.Utils.String.escape(value) + "'" : (value != null ? value.tostring() : ""));
+        return (typeof(value) == "string" ? "'" + string.escape(value) + "'" : (value != null ? value.tostring() : ""));
     }
 }
+
+module.exports = Formatter;

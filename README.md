@@ -7,7 +7,7 @@ Today im gonna show you how to make your (your dev team) life easier and happier
 ## What is it ?
 This is a small library that wraps your data and maps it to the table fields in database. Adding operations for fast access, modifications and saving without any extra work.
 
-### Most of the features are available, but substance is highly unstable. (Still under active development). 
+### Most of the features are available, but substance is highly unstable. (Still under active development).
 
 ## How it works:
 
@@ -15,7 +15,7 @@ First of all you need to declare your model(s):
 
 ```squirrel
 class Player extends ORM.Entity {
-    
+
     /**
      * Didn't find any way to get current classname
      * so, we need to set it up manually
@@ -63,18 +63,18 @@ player.save();
 
 // find one player by id
 Player.findOneBy({ id = 15 }, function(err, player) {
-	::print(player.username);
-	
-	// you can change some fields and save the model right after
-	player.username = "newusername";
-	player.save();
+    ::print(player.username);
+
+    // you can change some fields and save the model right after
+    player.username = "newusername";
+    player.save();
 });
 
 // or delete all of them
 Player.findAll(function(err, players) {
-	foreach (idx, player in players) {
-		player.remove();
-	}
+    foreach (idx, player in players) {
+        player.remove();
+    }
 });
 ```
 
@@ -82,28 +82,28 @@ Or you can show your damn ninja skillz with some SQL:
 
 ```squirrel
 local q = ORM.Query("
-	select 
-		p.id,
-		p.username as nickname,
-		concat(
-			'item: ', pi.title,
-			' size: ', pi.size
-		) as inventory,
-		pv.plate as car_plate
-		
-	from @Player p
-	
-	left join @PlayerItem pi on pi.player_id = p.id
-	left join @PlayerVehicle pv on pv.player_id = p.id
-	
-	where p.id = :id and pi.id = :item_id
+    select
+        p.id,
+        p.username as nickname,
+        concat(
+            'item: ', pi.title,
+            ' size: ', pi.size
+        ) as inventory,
+        pv.plate as car_plate
+
+    from @Player p
+
+    left join @PlayerItem pi on pi.player_id = p.id
+    left join @PlayerVehicle pv on pv.player_id = p.id
+
+    where p.id = :id and pi.id = :item_id
 ");
 
 q.setParameter("id", 15);
 q.setParameter("item_id", 2424);
 
 q.getSingleResult(function(err, data) {
-	::print(data["inventory"]);
+    ::print(data["inventory"]);
 });
 ```
 Note: **@Player** or **@PlayerItem**, ..., are synonyms for registered model class. They will be replace to a table names described in each entity class.
@@ -125,10 +125,10 @@ dofile("./orm/dst/index.nut", true);
 // and set up driver (this example uses simple mysql)
 ORM.Driver.setProxy(function(queryString, callback) {
     local query = mysql_query(queryString);
-    
+
     // return data inside ORM
     callback(null, mysql_fetch_assoc(query));
-    
+
     // free
     mysql_free_result(query);
 });
@@ -175,7 +175,7 @@ ORM.Driver.configure({
 If You want, you can help with development of this library. All you need to do is to clone it locally, and start doing stuff. However you need to have installed squirrel binary `sq` :p
 
 ### Unit testing
-Also, there is a testing suite, (unit testing) to test if stuff still works after your changes. 
+Also, there is a testing suite, (unit testing) to test if stuff still works after your changes.
 
 To run it, use: `sq test/index.nut`
 (You dont need actual database to test most of those). Look inside test/index.nut for details.

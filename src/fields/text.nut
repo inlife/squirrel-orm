@@ -1,6 +1,9 @@
-class ORM.Field.Bool extends ORM.Field.Basic {
-    static type = "tinyint";
-    static size = 1;
+local Basic = require("./basic");
+
+class Text extends Basic
+{
+    static type = "text";
+    static value = "";
 
     /**
      * Method that encodes value
@@ -9,7 +12,7 @@ class ORM.Field.Bool extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return currentValue.tointeger();
+        return currentValue ? currentValue.tostring() : "";
     }
 
     /**
@@ -19,6 +22,8 @@ class ORM.Field.Bool extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function decode(encodedValue) {
-        return encodedValue.tointeger() == 1;
+        return encodedValue ? encodedValue.tostring() : "";
     }
 }
+
+module.exports = Text;

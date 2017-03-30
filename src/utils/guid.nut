@@ -1,4 +1,4 @@
-ORM.Utils["GUID"] <- function (length = 8) {
+module.exports = function(length = 8) {
     // TODO: add shuffle
     local symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     local string = "";
@@ -14,4 +14,4 @@ ORM.Utils["GUID"] <- function (length = 8) {
     }
 
     return string;
-}
+};

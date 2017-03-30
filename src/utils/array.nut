@@ -1,4 +1,5 @@
-class ORM.Utils.Array {
+class Array
+{
     /**
      * Join array using sep as separator
      * Author: @Stormeus
@@ -20,3 +21,5 @@ class ORM.Utils.Array {
         return arr.reduce(@(a, b) a + sep + b);
     }
 }
+
+module.exports = Array;

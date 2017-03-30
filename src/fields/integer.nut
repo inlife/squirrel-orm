@@ -1,4 +1,7 @@
-class ORM.Field.Integer extends ORM.Field.Basic {
+local Basic = require("./basic");
+
+class Integer extends Basic
+{
     static type = "int";
     static value = 0;
     static size = 255;
@@ -23,3 +26,5 @@ class ORM.Field.Integer extends ORM.Field.Basic {
         return encodedValue != null ? encodedValue.tointeger() : null;
     }
 }
+
+module.exports = Integer;

@@ -1,9 +1,14 @@
+local driver    = require("../driver");
+local formatter = require("../utils/formatter");
+
+const UNDEFINED = "UNDEFINED";
+
 /**
  * Basic class for field
  * Must be inherited to be used
  */
-class ORM.Field.Basic {
-
+class Basic
+{
     /**
      * Name of field
      * @type {String}
@@ -119,7 +124,7 @@ class ORM.Field.Basic {
         local primary   = this.__primary  ? "PRIMARY KEY" : "";
 
         // special override for sqlite
-        if (ORM.Driver.storage.provider == "sqlite") {
+        if (driver.storage.provider == "sqlite") {
 
             // autoincrement field
             if (autoinc != "") {
@@ -129,7 +134,7 @@ class ORM.Field.Basic {
         }
 
         // default value
-        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + ORM.Utils.Formatter.escape( this.encode(this.__value) ) : "";
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + formatter.escape( this.encode(this.__value) ) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",
@@ -170,3 +175,5 @@ class ORM.Field.Basic {
         return encodedValue;
     }
 }
+
+module.exports = Basic;

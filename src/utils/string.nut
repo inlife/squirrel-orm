@@ -1,4 +1,5 @@
-class ORM.Utils.String {
+class String
+{
     /**
      * Replace occurances of "search" to "replace" in the "subject"
      * @param  {string} search
@@ -91,5 +92,6 @@ class ORM.Utils.String {
 
         return res;
     }
-
 }
+
+module.exports = String;

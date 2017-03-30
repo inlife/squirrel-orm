@@ -1,4 +1,7 @@
-class ORM.Field.Float extends ORM.Field.Basic {
+local Basic = require("./basic");
+
+class Float extends Basic
+{
     static type = "float";
     static value = 0.0;
 
@@ -22,3 +25,5 @@ class ORM.Field.Float extends ORM.Field.Basic {
         return encodedValue != null ? encodedValue.tofloat() : null;
     }
 }
+
+module.exports = Float;

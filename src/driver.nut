@@ -1,4 +1,5 @@
-class ORM.Driver {
+class Driver
+{
     static storage = {
         proxy = null,
         provider = "mysql",
@@ -26,3 +27,5 @@ class ORM.Driver {
         storage.proxy(queryString, callback);
     }
 }
+
+module.exports = Driver;
