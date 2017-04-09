@@ -92,7 +92,11 @@ class ORM.Entity {
 
         // fill in default values
         foreach (idx, field in this.fields) {
-            this.__data[field.__name] <- field.__value;
+            if (field.__name == "_entity") {
+                this.__data[field.__name] <- this.classname;
+            } else {
+                this.__data[field.__name] <- field.__value;
+            }
         }
     }
 
