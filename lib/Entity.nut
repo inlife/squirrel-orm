@@ -141,6 +141,18 @@ class ORM.Entity {
 
             // attach trait fields
             foreach (idx, field in trait.fields) {
+                local skipping = false;
+
+                foreach (idx, ofield in this.fields) {
+                    if (field.__name == ofield.__name) {
+                        skipping = true;
+                    }
+                }
+
+                if (skipping) {
+                    continue;
+                }
+
                 this.fields.push(field);
             }
 
