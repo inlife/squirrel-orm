@@ -10,7 +10,7 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (entity.__modified.find(field.__name) != null) {
-                result.push(format("`%s` = ", field.getName()) + this.escape( field.encode(entity.__data[field.__name]) ));
+                result.push(format("`%s` = ", field.getName()) + field.encode(entity.__data[field.__name]));
             }
         }
 
@@ -45,7 +45,7 @@ class ORM.Utils.Formatter {
 
         foreach (idx, field in entity.fields) {
             if (field instanceof ORM.Field.Id) continue;
-            result.push(this.escape( field.encode(entity.__data[field.__name]) ));
+            result.push(field.encode(entity.__data[field.__name]));
         }
 
         return ORM.Utils.Array.join(result, ",");

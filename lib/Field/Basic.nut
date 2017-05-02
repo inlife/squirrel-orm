@@ -46,6 +46,12 @@ class ORM.Field.Basic {
     __sqlite = false;
 
     /**
+     * Wether or not this field should be escaped
+     * @type {Boolean}
+     */
+    __escaping = true;
+
+    /**
      * Field type
      * @type {String}
      */
@@ -91,6 +97,7 @@ class ORM.Field.Basic {
         this.__nullable = "nullable" in data ? data.nullable : this.__nullable;
         this.__autoinc  = "autoinc"  in data ? data.autoinc  : this.__autoinc;
         this.__exported = "exported" in data ? data.exported : this.__exported;
+        this.__escaping = "escaping" in data ? data.escaping : this.__escaping;
 
         // handle the default value
         if ("value" in data) {
@@ -129,7 +136,7 @@ class ORM.Field.Basic {
         }
 
         // default value
-        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + ORM.Utils.Formatter.escape( this.encode(this.__value) ) : "";
+        local defval = this.__value && this.__name != "_entity" ? "DEFAULT " + this.encode(this.__value) : "";
 
         // insert and return;
         return strip(format("`%s` %s %s %s %s %s",

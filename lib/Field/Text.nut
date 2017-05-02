@@ -9,7 +9,7 @@ class ORM.Field.Text extends ORM.Field.Basic {
      * @return {Mixed}
      */
     function encode(currentValue) {
-        return currentValue ? currentValue.tostring() : "";
+        return currentValue ? this.__escaping ? ORM.Formatter.escape(currentValue.tostring()) : currentValue.tostring() : "";
     }
 
     /**
