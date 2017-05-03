@@ -375,7 +375,10 @@ class ORM.Entity {
         // call init (calls only one time per entity)
         this.initialize();
 
-        return ORM.Query("SELECT * FROM `:table`").setParameter("table", table, true).getResult(callback);
+        return ORM.Query("SELECT * FROM `:table` WHERE `_entity` LIKE :entity")
+            .setParameter("table", table, true)
+            .setParameter("entity", this.classname)
+            .getResult(callback);
     }
 
     /**
@@ -387,6 +390,10 @@ class ORM.Entity {
     static function findBy(condition, callback) {
         // call init (calls only one time per entity)
         this.initialize();
+
+        if (!("_entity" in condition)) {
+            condition["_entity"] <- this.classname;
+        }
 
         local query = ORM.Query("SELECT * FROM `:table` :condition")
 
@@ -405,6 +412,10 @@ class ORM.Entity {
     static function findOneBy(condition, callback) {
         // call init (calls only one time per entity)
         this.initialize();
+
+        if (!("_entity" in condition)) {
+            condition["_entity"] <- this.classname;
+        }
 
         local query = ORM.Query("SELECT * FROM `:table` :condition LIMIT 1")
 
