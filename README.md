@@ -7,8 +7,6 @@ Today im gonna show you how to make your (your dev team) life easier and happier
 ## What is it ?
 This is a small library that wraps your data and maps it to the table fields in database. Adding operations for fast access, modifications and saving without any extra work.
 
-### Most of the features are available, but substance is highly unstable. (Still under active development). 
-
 ## How it works:
 
 First of all you need to declare your model(s):
