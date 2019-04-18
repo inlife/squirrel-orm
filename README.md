@@ -112,7 +112,7 @@ Note: **@Player** or **@PlayerItem**, ..., are synonyms for registered model cla
 2. Put somewhere not far away from your binary (*.exe)
 3. Insert code where you want to use it:
 
-Common MySQL example:
+#### Common MySQL example:
 
 ```squirrel
 // load lib where you want it to work
@@ -134,7 +134,7 @@ ORM.Driver.setProxy(function(queryString, callback) {
 // now use it!
 ```
 
-Mafia 2 Online SQLite example:
+#### Mafia 2 Online SQLite example:
 ```squirrel
 // load lib where you want it to work
 // note, path relative to your PWD
