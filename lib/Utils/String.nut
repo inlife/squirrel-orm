@@ -44,7 +44,7 @@ class ORM.Utils.String {
                 ch1 = format("%c", ch1);
 
                 if (ch1 == "\'") {
-                    res += "\\\'";
+                    res += "\'\'"; // double single quote escape for SQL
                 } else if (ch1 == "\"") {
                     res += "\\\"";
                 } else if (ch1 == "\\") {
