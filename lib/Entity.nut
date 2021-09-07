@@ -316,35 +316,36 @@ class ORM.Entity {
 
             return query.execute(callback);
         } else {
-            // create and execute even cuter query
-            // local lastid = "LAST_INSERT_ID";
-
-            // // special check for sqlite
-            // if (ORM.Driver.storage.provider == "sqlite") {
-            //     lastid = "last_insert_rowid";
-            // }
-
             local query = ORM.Query("INSERT INTO `:table` (:fields) VALUES (:values);");
 
             query.setParameter("table", this.table, true);
             query.setParameter("fields", ORM.Utils.Formatter.calculateFields(this), true);
             query.setParameter("values", ORM.Utils.Formatter.calculateValues(this), true);
-            // query.setParameter("lastid", lastid);
 
-            // try to read result and save last inserted id
-            // as current entity id, and mark as persisted
-            return query.getSingleResult(function(err, result) {
+            return query.execute(function(err, result) {
                 if (err && callback) return callback(err, null);
 
-                // TODO: test for last insert id for mysql&sqlite
-                if (!("id" in result)) {
-                    throw "ORM.Entity: coundn't assign id after insertion; check the query or smth else.";
+                // create and execute even cuter query
+                local lastid = "LAST_INSERT_ID";
+
+                // special check for sqlite
+                if (ORM.Driver.storage.provider == "sqlite") {
+                    lastid = "last_insert_rowid";
                 }
 
-                self.__data["id"] = result["id"];
-                self.__persisted = true;
+                local queryToGetId = ORM.Query("SELECT " + lastid + "() AS id;");
+                // try to read result and save last inserted id
+                // as current entity id, and mark as persisted
+                return queryToGetId.getSingleResult(function(err, result) {
+                    if (!("id" in result)) {
+                        throw "ORM.Entity: coundn't assign id after insertion; check the query or smth else.";
+                    }
 
-                return callback ? callback(null, this) : null;
+                    self.__data["id"] = result["id"];
+                    self.__persisted = true;
+
+                    return callback ? callback(null, this) : null;
+                });
             });
         }
 
